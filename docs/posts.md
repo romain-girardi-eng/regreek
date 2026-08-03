@@ -23,6 +23,7 @@ pip install regreek — et c'est tout.
 Si vous travaillez sur des textes anciens et possédez des documents dans des polices non couvertes (SGreek, WinGreek, Ismini…), quelques centaines de mots suffisent pour dériver et valider honnêtement une table : les contributions sont ouvertes.
 
 https://github.com/romain-girardi-eng/regreek
+DOI (citable) : https://doi.org/10.5281/zenodo.21778443
 
 #DigitalHumanities #Classics #OpenSource #AncientGreek #Patristics #Philologie
 
@@ -52,6 +53,7 @@ pip install regreek
 
 Have documents in an uncovered font (SGreek, WinGreek, Ismini…)? A few hundred words are enough to derive and honestly validate a table — contributions welcome.
 
+Citable: https://doi.org/10.5281/zenodo.21778443
 https://github.com/romain-girardi-eng/regreek
 
 ---

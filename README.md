@@ -2,6 +2,10 @@
 
 **Re-Greek your mojibake: recover polytonic Greek from documents typeset in pre-Unicode Greek fonts — and separate the page layers of critical editions.**
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21778443.svg)](https://doi.org/10.5281/zenodo.21778443)
+[![PyPI](https://img.shields.io/pypi/v/regreek)](https://pypi.org/project/regreek/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 ![regreek demo: a critical-edition page, its mojibake extraction, layer detection, and structured Markdown output](docs/demo.gif)
 
 Thousands of scholarly PDFs, Word documents, and web pages produced between
@@ -218,8 +222,10 @@ Python ≥ 3.10. Single runtime dependency: `pdfminer.six` (MIT).
 
 ## Citation
 
-If this tool contributes to published research, please cite it (see
-[`CITATION.cff`](CITATION.cff)).
+If this tool contributes to published research, please cite it via its DOI:
+[10.5281/zenodo.21778443](https://doi.org/10.5281/zenodo.21778443) (resolves
+to the latest version; see [`CITATION.cff`](CITATION.cff) for a ready-made
+reference).
 
 ## License
 
