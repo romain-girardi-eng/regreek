@@ -141,6 +141,14 @@ Layers: `greek_text`, `translation`, `apparatus`, `notes`, `heading`,
 size register and gap that justified the label) and a confidence; inline
 witness references (`[fol. 94 v° : A]`) are extracted alongside, not removed.
 
+**Citability.** The PDF page index is a file coordinate, not a locus: a
+scholarly citation needs the folio *printed on the page*. `regreek` reads it
+from the page itself (footer or header) and exposes it as `printed_page` in
+the JSON and in `--md` headers (`## PDF page 300 — printed page 294`),
+validated as arithmetically consistent across whole volumes. When a document
+genuinely carries no folio in its text layer (e.g. publisher proofs),
+`printed_page` is honestly `null` rather than guessed.
+
 Validation on 55 pages of a bilingual critical edition (two volumes):
 running heads and page numbers 55/55; **zero apparatus sigla leaked into the
 Greek text layer**; overall sigla routing 97.8 % (the residue sits on

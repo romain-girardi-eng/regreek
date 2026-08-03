@@ -277,3 +277,21 @@ What held under attack: determinism, NFC output, Greek-block guarantee,
 rho-breathing rule, orphan-mark flagging, hyphen/diacritic-migration repair,
 RTL/ZWJ/combining-flood inputs (preserved + flagged), 50k-char tokens
 (slow but no crash), package/version/licensing hygiene.
+
+## 10. Citability and cross-publisher hardening (2026-08-03)
+
+- **Printed folio extraction** (`LayeredPage.printed_page`): the page number
+  as printed on the page (footer or header) is what a citation must use —
+  the PDF index is a file coordinate. Validated on the bilingual edition:
+  79/80 pages, PDF-to-printed offset arithmetically constant across both
+  volumes; header folios validated on a journal article (consistent
+  progression). On publisher proof PDFs whose text layer genuinely carries
+  no folio, the field is honestly None.
+- **Form-XObject pages**: one real journal PDF wrapped all page text in
+  Form XObjects, which pdfminer hides from a flat scan (zero lines found).
+  Line collection is now recursive with `LAParams(all_texts=True)`.
+- **Cross-publisher checks**: on two OUP monographs (Porson, Unicode,
+  footnotes but no apparatus) the classifier produces `notes`, never a fake
+  `apparatus`. Headings on Greek pages of the edition re-audited: the
+  remaining ones are genuine testimonia source-titles and back-matter index
+  pages (documented limitation), not constituted text.

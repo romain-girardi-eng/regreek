@@ -92,7 +92,8 @@ def main(argv: list[str] | None = None) -> int:
         if not pg.bands:
           continue
         got = True
-        print(f"## page {pg.page}\n")
+        printed = f" — printed page {pg.printed_page}" if pg.printed_page else ""
+        print(f"## PDF page {pg.page}{printed}\n")
         for b in pg.bands:
           refs = f"  \n*refs: {', '.join(b.inline_refs)}*" if b.inline_refs else ""
           print(f"### {b.layer}  \n<sub>confidence {b.confidence:.2f} — {b.evidence}</sub>{refs}\n")
@@ -107,6 +108,7 @@ def main(argv: list[str] | None = None) -> int:
       got = True
       print(json.dumps({
         "page": pg.page,
+        "printed_page": pg.printed_page,
         "bands": [
           {
             "layer": b.layer,

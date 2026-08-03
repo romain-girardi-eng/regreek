@@ -41,6 +41,7 @@ class FakeLine:
 class FakeContainer:
   def __init__(self, lines):
     self._lines = lines
+    self._objs = lines  # mirrors pdfminer: children live in _objs
 
   def __iter__(self):
     return iter(self._lines)
@@ -178,3 +179,23 @@ def test_dot_leader_is_not_a_page_number() -> None:
   lines.append(FakeLine(". . . . .", "Garamond", 10.0, 141.0, x0=200.0))
   page = classify_page(FakeLayout(lines), 1)
   assert all(b.layer != "page_number" for b in page.bands)
+
+
+def test_printed_page_is_the_citable_folio() -> None:
+  """The printed folio (footer or header) is what a citation must use — the
+  PDF index is a file coordinate. Both placements are captured."""
+  page = classify_page(greek_page(), 300)
+  assert page.printed_page == "294"
+  assert page.page == 300
+  # header folio: short digits line near the top, after a title line
+  lines = [
+    FakeLine("JOURNAL TITLE", "Garamond", 9.0, 790.0, x0=200.0),
+    FakeLine("225", "Garamond", 9.0, 789.0, x0=420.0),
+  ]
+  y = 750.0
+  for _ in range(8):
+    lines.append(FakeLine(
+      "Il repondit que la resurrection des morts adviendra", "Garamond", 11.0, y))
+    y -= 12.0
+  pg = classify_page(FakeLayout(lines), 8)
+  assert pg.printed_page == "225"

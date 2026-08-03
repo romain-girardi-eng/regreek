@@ -29,7 +29,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from pdfminer.high_level import extract_pages
-from pdfminer.layout import LTChar, LTTextContainer, LTTextLine
+from pdfminer.layout import LAParams, LTChar, LTTextLine
 
 from .decoder import is_greek_char
 from .registry import decoder_for_font, known_legacy_font
@@ -88,9 +88,15 @@ class Band:
 @dataclass
 class LayeredPage:
   page: int
+  """0-based index of the page in the PDF file — a file coordinate, NOT a
+  citable locus."""
   width: float
   height: float
   bands: list[Band]
+  printed_page: str | None = None
+  """The page number as printed on the page itself (header or footer) — the
+  number a scholarly citation must use. None when the page carries none
+  (front matter) or none was detected."""
 
   def layer_text(self, layer: str) -> str:
     return "\n".join(b.text for b in self.bands if b.layer == layer)
@@ -124,14 +130,25 @@ def _decode_line(chars: list[LTChar]) -> str:
   return unicodedata.normalize("NFC", "".join(out))
 
 
+def _iter_text_lines(el):
+  """Recursively yield every LTTextLine, wherever it sits.
+
+  Some publishers put the whole page in Form XObjects: pdfminer wraps those
+  in LTFigure containers, so a flat scan over top-level LTTextContainer
+  objects sees nothing (observed on a real edition). Combined with
+  ``LAParams(all_texts=True)`` this recovers them.
+  """
+  if isinstance(el, LTTextLine):
+    yield el
+    return
+  for child in getattr(el, "_objs", []) or []:
+    yield from _iter_text_lines(child)
+
+
 def _lines_of(layout) -> list[Line]:
   lines: list[Line] = []
   for el in layout:
-    if not isinstance(el, LTTextContainer):
-      continue
-    for tl in el:
-      if not isinstance(tl, LTTextLine):
-        continue
+    for tl in _iter_text_lines(el):
       chars = [c for c in tl if isinstance(c, LTChar)]
       if not chars:
         continue
@@ -184,14 +201,30 @@ def classify_page(layout, page_number: int) -> LayeredPage:
   pitch = _pitch(lines)
   work = list(lines)
 
-  # --- page number: bottom line, digits only, isolated -----------------------
-  if len(work) >= 2 and _DIGITS_ONLY.match(work[-1].text) \
-      and (work[-2].y0 - work[-1].y0) > 1.6 * pitch:
+  # --- page number: printed folio, in the footer or the header ---------------
+  # This is the number a scholarly citation must use (the PDF index is a file
+  # coordinate, not a locus). Publishers set it isolated at the foot, or as a
+  # short line in the header area.
+  def _take_page_number(idx: int, where: str, why: str) -> None:
+    ln = work.pop(idx)
+    page.printed_page = ln.text.strip()
     page.bands.append(Band(
-      layer="page_number", lines=[work.pop()],
-      evidence=f"digits-only bottom line isolated by >{1.6:.1f}x pitch",
+      layer="page_number", lines=[ln], evidence=f"digits-only {where} line, {why}",
       confidence=0.95,
     ))
+
+  if len(work) >= 2 and _DIGITS_ONLY.match(work[-1].text) \
+      and (work[-2].y0 - work[-1].y0) > 1.6 * pitch:
+    _take_page_number(len(work) - 1, "bottom", "isolated by >1.6x pitch")
+  else:
+    # header folios: a short digits-only line among the topmost lines, above
+    # the body (publishers set the folio beside or under the running head)
+    for idx in range(min(3, len(work) - 1)):
+      ln = work[idx]
+      if _DIGITS_ONLY.match(ln.text) and len(ln.text) <= 6 \
+          and ln.y0 > 0.85 * layout.height:
+        _take_page_number(idx, "header", "short, in the top page band")
+        break
 
   # --- running head: top line, isolated, no sentence content -----------------
   if len(work) >= 2 and (work[0].y0 - work[1].y0) > 1.6 * pitch \
@@ -305,7 +338,8 @@ def layer_pages(pdf_path: str | Path, pages: list[int] | None = None) -> list[La
   """Classify every requested page of a PDF into layers."""
   out: list[LayeredPage] = []
   numbers = pages
-  for i, layout in enumerate(extract_pages(str(pdf_path), page_numbers=numbers)):
+  for i, layout in enumerate(extract_pages(
+      str(pdf_path), page_numbers=numbers, laparams=LAParams(all_texts=True))):
     page_no = numbers[i] if numbers is not None else i
     out.append(classify_page(layout, page_no))
   return out
