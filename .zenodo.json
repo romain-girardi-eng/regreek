@@ -1,0 +1,30 @@
+{
+  "title": "regreek: recovering polytonic Greek from pre-Unicode font encodings",
+  "description": "<p>regreek recovers polytonic Unicode Greek from documents typeset in pre-Unicode Greek fonts (Graeca, SPIonic, Bwgrkl, Odyssea, GrecMonotype, TimesGreek, SymbolGreekII and others), whose ToUnicode maps point at Latin ASCII, and separates the layers of critical-edition pages (constituted text, apparatus criticus, facing translation, running heads, page numbers).</p><p>Decoding is deterministic table lookup: the encoding tables are derived empirically by aligning real documents against reference corpora and validated on held-out texts (98–100% measured attestation, recorded in each table file). Unknown input is preserved and flagged, never guessed; the tool refuses to transliterate plain Latin-alphabet prose into pseudo-Greek. Layer separation uses geometry and typography only — no machine learning — and never reorders or merges lines; validation on a bilingual critical edition shows zero leakage of apparatus readings into the constituted-text layer.</p>",
+  "creators": [
+    {
+      "name": "Girardi, Romain",
+      "affiliation": "CEPAM UMR 7264, Université Côte d'Azur"
+    }
+  ],
+  "license": "MIT",
+  "upload_type": "software",
+  "access_right": "open",
+  "keywords": [
+    "Ancient Greek", "polytonic Greek", "digital humanities", "classics",
+    "patristics", "critical editions", "apparatus criticus", "legacy fonts",
+    "Unicode", "text extraction", "SPIonic", "Graeca"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/romain-girardi-eng/regreek",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://pypi.org/project/regreek/",
+      "relation": "isIdenticalTo",
+      "scheme": "url"
+    }
+  ]
+}
