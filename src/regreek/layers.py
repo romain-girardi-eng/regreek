@@ -351,7 +351,11 @@ def classify_page(layout, page_number: int) -> LayeredPage:
 def layer_pages(pdf_path: str | Path, pages: list[int] | None = None) -> list[LayeredPage]:
   """Classify every requested page of a PDF into layers."""
   out: list[LayeredPage] = []
-  numbers = pages
+  # SORTED is load-bearing: pdfminer yields pages in DOCUMENT order
+  # regardless of the requested order, so pairing the yield sequence with
+  # an unsorted request would silently label one page's content with
+  # another page's index.
+  numbers = sorted(set(pages)) if pages is not None else None
   for i, layout in enumerate(extract_pages(
       str(pdf_path), page_numbers=numbers, laparams=LAParams(all_texts=True))):
     page_no = numbers[i] if numbers is not None else i

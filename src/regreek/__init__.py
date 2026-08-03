@@ -10,7 +10,7 @@ from .pdf import DecodedPage, decode_page, extract_runs, legacy_fonts_in_pdf
 from .registry import decoder_for_font, known_legacy_font, table_for_font
 from .text import DecodedText, DetectionScore, decode_text, detect_encoding, tables_by_id
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 
 __all__ = [
   "CharRecord",
