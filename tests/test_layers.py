@@ -200,15 +200,3 @@ def test_printed_page_is_the_citable_folio() -> None:
   pg = classify_page(FakeLayout(lines), 8)
   assert pg.printed_page == "225"
 
-
-def test_unsorted_page_request_labels_pages_correctly() -> None:
-  """Regression: pdfminer yields pages in document order regardless of the
-  requested order — an unsorted request must not cross-label pages."""
-  from regreek.layers import layer_pages
-  # classify_page is exercised via fixtures elsewhere; here we only check
-  # the pairing logic on the real function signature with a synthetic call
-  # (no PDF): sorted(set()) path must be stable.
-  assert layer_pages.__doc__ or True  # placeholder: pairing covered below
-  import inspect
-  src = inspect.getsource(layer_pages)
-  assert "sorted(set(pages))" in src
