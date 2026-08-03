@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "regreek"
-version = "0.2.0"
+version = "0.3.0"
 description = "Recover polytonic Unicode Greek from pre-Unicode font encodings (Graeca, SPIonic, Bwgrkl, Odyssea…) in PDFs and text"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -41,7 +41,7 @@ Homepage = "https://github.com/romain-girardi-eng/regreek"
 Issues = "https://github.com/romain-girardi-eng/regreek/issues"
 
 [project.scripts]
-regreek = "regreek.cli:main"
+regreek = "regreek.cli:run"
 
 [tool.setuptools.packages.find]
 where = ["src"]

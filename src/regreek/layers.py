@@ -39,7 +39,7 @@ from .registry import decoder_for_font, known_legacy_font
 _INLINE_REF = re.compile(
   r"\[(?:fol\.|p\.|col\.|PG|PL)\s?[^\]]{0,30}\]"
 )
-_DIGITS_ONLY = re.compile(r"^[\divxlcIVXLC .\-–]+$")
+_DIGITS_ONLY = re.compile(r"^(?=.*[\divxlc])[\divxlcIVXLC .\-–]+$")
 
 
 @dataclass
@@ -227,11 +227,25 @@ def classify_page(layout, page_number: int) -> LayeredPage:
     span = max(x.x1 for x in main) - min(x.x0 for x in main)
     return left > 0.12 * span and right > 0.12 * span
 
+  # A heading must differ from the body typographically (font family or
+  # size), not merely be centred: short final lines of Greek paragraphs are
+  # frequently centred-ish, and misfiling them would drop constituted text
+  # from the greek_text layer (red-team finding, 2026-08-03).
+  body_font = Counter(
+    f for ln in main for f, n in ln.fonts.items() for _ in range(n)
+  ).most_common(1)[0][0] if main else ""
+
+  def differs_typographically(ln: Line) -> bool:
+    dom = Counter(
+      f for f, n in ln.fonts.items() for _ in range(n)
+    ).most_common(1)[0][0]
+    return dom != body_font or ln.size != body_size
+
   segments: list[tuple[str, list[Line], str, float]] = []
   cur: list[Line] = []
   cur_head: list[Line] = []
   for ln in main:
-    if is_centered(ln) and not _DIGITS_ONLY.match(ln.text):
+    if is_centered(ln) and differs_typographically(ln) and not _DIGITS_ONLY.match(ln.text):
       if cur:
         segments.append(("body", cur, "", 0.0))
         cur = []
@@ -240,7 +254,7 @@ def classify_page(layout, page_number: int) -> LayeredPage:
       if cur_head:
         segments.append((
           "heading", cur_head,
-          "centered narrow line(s) within the body column", 0.85,
+          "centered, and typographically distinct from the body (font family or size)", 0.85,
         ))
         cur_head = []
       cur.append(ln)

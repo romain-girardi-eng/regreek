@@ -2,7 +2,7 @@
 
 Empirical survey and table derivation over a private research corpus of 601
 scholarly PDFs (classics/patristics; read-only). Everything below was measured,
-not assumed. Full machine-readable inventory: `data/font_inventory.json`
+not assumed. Aggregated machine-readable census: `data/font_census.json`
 (601 PDFs, per-PDF font list, page counts, sampled char counts).
 
 ## 1. Corpus inventory
@@ -74,7 +74,7 @@ Metrics on ≥2-letter tokens; `coverage` = tokens fully decoded (no unmapped co
 
 | Font | Derived from | Validated on | Tokens | Coverage | att_base | att_accented |
 |---|---|---|---|---|---|---|
-| **Graeca** | Bobichon vol. 1 vs TLG0645 (50,026 pairs) | **held-out: vol. 2** (Dial. 75-142) | 15,152 | 99.9 % | **99.4 %** | **98.6 %** |
+| **Graeca** | Bobichon vol. 1 vs TLG0645 (50,026 pairs) | **held-out: vol. 2** (Dial. 75-142) | 15,142 | 99.9 % | **99.4 %** | **98.6 %** |
 | **GraecaII** | Graeca family + variant `` ` ``=circumflex | La Catena delle cause (different work) | 1,100 | 99.9 % | 100 % | 99.3 % |
 | **Odyssea** | family + variants (alignment vs TLG0557) | Epictetus paper | 345 | 99.7 % | 100 % | 98.8 % |
 | **SymbolGreekII** | family + `~`=final sigma | OROPEZA 2007 — **23 tokens only** | 23 | 100 % | 87.0 % | 82.6 % |
@@ -235,3 +235,45 @@ rather than heuristically patched.
 Inline witness references (`[fol. 94 v° : A]`, `[p. 144 : B]`, `[PG …]`)
 are extracted per band into `inline_refs` and left in place in the text
 (fidelity over cleaning).
+
+## 9. Adversarial red-team and fixes (2026-08-03)
+
+An independent adversarial review attacked the published v0.2.0 on six
+surfaces (claims, zero-fabrication contract, layer classifier, crash
+resistance, package hygiene, determinism). Its re-measurements **confirmed**
+the published numbers (held-out Graeca 97.5 % on its own page sample vs
+99.4 % published; sigla routing 100 % with zero greek_text leakage on a
+disjoint 54-page sample; wheel byte-identical to the repo; determinism
+byte-stable). It also found real defects, all fixed in v0.3.0:
+
+- **F1 (critical)** — auto-detection happily "decoded" plain English/French
+  prose into pseudo-Greek with score 1.0. Detection now requires diacritic
+  key-code evidence (≥15 % of tokens); plain Latin prose is refused with an
+  explicit message, and an explicit `encoding=` on such input attaches a
+  warning instead of silent transliteration.
+- **F2 (major)** — tokens containing already-Unicode Greek were silently
+  discarded by the word filter. They now pass through verbatim (NFC), with a
+  provenance record.
+- **F3 (major)** — mid-word positional-variant glyphs (`final_letter` codes)
+  were consumed without a provenance record. Every consumed character now
+  appears in `records`.
+- **F4 (major)** — short centred Greek lines in the same face and size as
+  the body were misfiled as `heading`, dropping constituted text from the
+  greek_text layer (observed on two real pages). A heading now must differ
+  from the body typographically (font family or size), not merely be
+  centred.
+- **F6 (minor)** — CLI user errors surfaced as raw tracebacks; a dotted
+  leader could match the digits-only page-number rule. Both fixed (clean
+  stderr messages, exit 2; digits now required).
+- **F7 (minor)** — token count 15,152 → 15,142 (matches the table file);
+  stale reference to the pre-publication inventory file corrected.
+- **F5, adjudicated false positive** — SPIonic `7` is the chart's
+  non-breaking space: treating it as a word separator is correct
+  tokenization, not deletion. Documented in the table file. The general
+  point stands and is already policy: characters that *are* codes must
+  never sit in `separators`.
+
+What held under attack: determinism, NFC output, Greek-block guarantee,
+rho-breathing rule, orphan-mark flagging, hyphen/diacritic-migration repair,
+RTL/ZWJ/combining-flood inputs (preserved + flagged), 50k-char tokens
+(slow but no crash), package/version/licensing hygiene.

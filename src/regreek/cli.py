@@ -67,6 +67,8 @@ def main(argv: list[str] | None = None) -> int:
       print(result.text)
       if result.detection:
         print(f"[encoding: {result.table_id}, auto-detected]", file=sys.stderr)
+      if result.warning:
+        print(f"[!] {result.warning}", file=sys.stderr)
       if not result.fully_mapped:
         print(f"[!] {result.unmapped_total} unmapped code(s) preserved and flagged",
               file=sys.stderr)
@@ -154,5 +156,20 @@ def main(argv: list[str] | None = None) -> int:
   return 0
 
 
+def run() -> int:
+  """Console entry point: user errors become messages, not tracebacks."""
+  try:
+    return main()
+  except (ValueError, KeyError) as exc:
+    print(f"error: {exc}", file=sys.stderr)
+    return 2
+  except FileNotFoundError as exc:
+    print(f"error: file not found: {exc.filename or exc}", file=sys.stderr)
+    return 2
+  except (UnicodeDecodeError, Exception) as exc:  # pdfminer parse errors etc.
+    print(f"error: {type(exc).__name__}: {exc}", file=sys.stderr)
+    return 2
+
+
 if __name__ == "__main__":
-  raise SystemExit(main())
+  raise SystemExit(run())

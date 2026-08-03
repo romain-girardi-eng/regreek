@@ -148,3 +148,33 @@ def test_inline_refs_extracted() -> None:
   page = classify_page(FakeLayout(lines), 1)
   got = layers_of(page)
   assert any("fol. 94" in r for r in got["greek_text"].inline_refs)
+
+
+def test_centered_same_face_lines_stay_body() -> None:
+  """F4 (red-team): short centred Greek lines in the SAME face and size as
+  the body are constituted text, not headings."""
+  lines = [FakeLine("AUTHOR NAME", "Garamond", 9.0, 661.0, x0=262.0)]
+  y = 626.0
+  for i in range(8):
+    if i == 4:
+      lines.append(FakeLine("kai; ta; a[lla", "GFDJFH+Graeca", 10.0, y, x0=250.0))
+    else:
+      lines.append(FakeLine("kai; oJ lovgo\" ejsti;n ajlhqh;" + "\"", "GFDJFH+Graeca", 10.0, y))
+    y -= 12.0
+  lines.append(FakeLine("294", "TimesNewRoman", 10.0, 141.0, x0=290.0))
+  page = classify_page(FakeLayout(lines), 1)
+  assert all(b.layer != "heading" for b in page.bands)
+  greek = [b for b in page.bands if b.layer == "greek_text"]
+  assert greek and len(greek[0].lines) == 8
+
+
+def test_dot_leader_is_not_a_page_number() -> None:
+  """F6 (red-team): a dotted leader line must not match digits-only."""
+  lines = [FakeLine("AUTHOR NAME", "Garamond", 9.0, 661.0, x0=262.0)]
+  y = 626.0
+  for _ in range(6):
+    lines.append(FakeLine("kai; oJ lovgo\" ejsti;n ajlhqhv\"", "GFDJFH+Graeca", 10.0, y))
+    y -= 12.0
+  lines.append(FakeLine(". . . . .", "Garamond", 10.0, 141.0, x0=200.0))
+  page = classify_page(FakeLayout(lines), 1)
+  assert all(b.layer != "page_number" for b in page.bands)

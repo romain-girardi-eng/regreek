@@ -219,3 +219,57 @@ def test_unique_table_ids() -> None:
 
   ids = tables_by_id()
   assert len(ids) == len(load_tables())
+
+
+# --- red-team regressions (2026-08-03) ---------------------------------------
+
+
+def test_plain_latin_prose_refused() -> None:
+  """F1: auto-detection must refuse to transliterate plain Latin-alphabet
+  prose into pseudo-Greek."""
+  import pytest as _pytest
+
+  from regreek.text import decode_text
+
+  for prose in (
+    "hello world this is plain english",
+    "le texte français ordinaire ne doit pas devenir du grec",
+    "lorem ipsum dolor sit amet consectetur",
+  ):
+    with _pytest.raises(ValueError):
+      decode_text(prose)
+
+
+def test_explicit_encoding_on_latin_prose_warns() -> None:
+  from regreek.text import decode_text
+
+  r = decode_text("hello world plain text here", encoding="graeca")
+  assert r.warning is not None
+
+
+def test_real_legacy_greek_still_detected() -> None:
+  from regreek.text import decode_text
+
+  r = decode_text("i3na mh\\ pare/lqh| u9ma~j o9 peirasmo/j")
+  assert r.table_id == "spionic-ascii"
+  assert r.warning is None
+  r2 = decode_text("dia; JHsai?ou khrucqe;n ejn pneuvmati aJgivw/")
+  assert r2.table_id == "graeca"
+
+
+def test_unicode_greek_tokens_pass_through() -> None:
+  """F2: already-Unicode Greek must survive tokenization and decoding."""
+  from regreek.text import decode_text
+
+  r = decode_text("kai; ἤδη λόγος tou'to", encoding="graeca")
+  assert r.text == "καὶ ἤδη λόγος τοῦτο"
+  assert r.fully_mapped
+  r2 = decode_text("λόγος σοφίας", encoding="graeca")
+  assert r2.text == "λόγος σοφίας"
+
+
+def test_midword_positional_variant_has_provenance() -> None:
+  """F3: a mid-word final_letter variant glyph must appear in the records."""
+  got = dec("Odyssea").decode_word('lo"go"')
+  assert got.text == "λογος"
+  assert "".join(r.source for r in got.records) == 'lo"go"'

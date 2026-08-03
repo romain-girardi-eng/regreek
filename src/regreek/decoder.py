@@ -117,7 +117,10 @@ class TableDecoder:
               [spec["final_letter"], list(pending), True, [ch, *pending_src], True, self._conf(ch)]
             )
             pending, pending_src = [], []
-          # mid-word: positioning variant glyph, no textual content
+          else:
+            # mid-word: positioning variant glyph, no textual content —
+            # still recorded so every input character has provenance
+            units.append(["", [], False, [ch], True, self._conf(ch)])
           continue
         if spec.get("final_apostrophe") and last and units and units[-1][2] \
             and _base(units[-1][0]) not in VOWELS:

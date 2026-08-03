@@ -16,7 +16,9 @@ from dataclasses import dataclass
 _SPACE = " \\t\\n\\r\u00a0\u2000-\u200b\u202f\u205f\u3000"
 _SEPARATORS = re.compile("[" + _SPACE + r"\d«»—–*&%§¶•°€#]+")
 
-_WORD_CHAR = re.compile(r"[A-Za-z-]")
+# Greek ranges included so already-Unicode Greek tokens are never discarded
+# by tokenization (red-team finding F2, 2026-08-03)
+_WORD_CHAR = re.compile(r"[A-Za-z\u0300-\u036f\u0370-\u03ff\u1f00-\u1fff\ue000-\uf8ff-]")
 
 
 @dataclass
@@ -38,7 +40,7 @@ def repair_lines(lines: list[str], code_chars: set[str]) -> list[str]:
   out: list[str] = []
   for raw in lines:
     # rejoin words split around an interleaved other-font insert: "fi- -losofiva"
-    ln = re.sub(r"-[ ]+-", "", raw)
+    ln = re.sub(r"(?<=[A-Za-z])-[ ]+-(?=[A-Za-z])", "", raw)
     # migrated diacritics: leading run of code chars then boundary
     m = re.match("^([" + re.escape("".join(sorted(code_chars))) + "]+)([" + _SPACE + "]|$)", ln) \
         if code_chars else None

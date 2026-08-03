@@ -85,7 +85,7 @@ in [`FINDINGS.md`](FINDINGS.md)):
 
 | Encoding | id | Derivation | Validation |
 |---|---|---|---|
-| Graeca (Linguist's Software) | `graeca` | corpus alignment, 50k pairs | **99.4 %** attestation on 15,152 held-out tokens |
+| Graeca (Linguist's Software) | `graeca` | corpus alignment, 50k pairs | **99.4 %** attestation on 15,142 held-out tokens |
 | GraecaII | `graeca2` | corpus alignment | 100 % / 99.3 % accent-sensitive |
 | Odyssea | `odyssea` | corpus alignment | 100 % / 98.8 % accent-sensitive |
 | Bwgrkl (BibleWorks) | `bwgrkl` | corpus alignment | 98.1 %, held-out document |

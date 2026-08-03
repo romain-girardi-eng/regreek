@@ -259,6 +259,7 @@
   ";": "Greek question mark (erotimatiko)",
   ":": "ano teleia (raised dot)",
   "?": "sub-linear dot (editorial uncertainty siglum) — deliberately unmapped, surfaces flagged",
-  "8": "overstrike line (nomina sacra) — deliberately unmapped, surfaces flagged"
+  "8": "overstrike line (nomina sacra) — deliberately unmapped, surfaces flagged",
+  "7": "non-breaking space in the SPIonic chart — a word separator by design; treating it as such is correct tokenization, not deletion (red-team F5 adjudicated 2026-08-03)"
  }
 }
