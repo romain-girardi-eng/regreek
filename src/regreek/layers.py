@@ -158,78 +158,126 @@ def _iter_text_lines(el):
     yield from _iter_text_lines(child)
 
 
+def _make_line(items: list, y0: float, y1: float, x0: float,
+               x1: float) -> Line | None:
+  chars = [c for c in items if isinstance(c, LTChar)]
+  if not chars:
+    return None
+  text = "".join(c.get_text() for c in items).strip()
+  if not text:
+    return None
+  sizes = Counter(round(c.size, 1) for c in chars)
+  fonts = Counter(c.fontname.split("+")[-1] for c in chars)
+  decoded = _decode_line(items)
+  greek = sum(1 for ch in decoded if is_greek_char(ch))
+  letters = sum(1 for ch in decoded if ch.isalpha()) or 1
+  return Line(
+    text=text,
+    decoded=decoded,
+    y0=y0, y1=y1, x0=x0, x1=x1,
+    size=sizes.most_common(1)[0][0],
+    fonts=dict(fonts),
+    greek_ratio=greek / letters,
+  )
+
+
+def _merge_group_items(frags: list[tuple]) -> list:
+  """Glyph-level merge of one physical line's fragments.
+
+  pdfminer splits a justified line into several LTTextLines — and on some
+  producers the split OVERLAPS: a bold run appears both at the end of the
+  left fragment and at the head of the right one, at the same coordinates
+  (observed: every bold lemma of a 2010 Distiller edition doubled, with
+  displaced copies corrupting neighbouring entries). Glyphs are re-sorted
+  by x, overlaid duplicates (same char within half a glyph) dropped, and
+  inter-word spacing re-synthesized from the geometry — a wide gap becomes
+  a double space, the entry-boundary idiom downstream splitting relies on.
+  """
+  chars = sorted(
+    (c for _, _, _, _, items, _ in frags
+     for c in items if isinstance(c, LTChar)),
+    key=lambda c: (c.x0, -c.y0),
+  )
+  merged: list = []
+  for c in chars:
+    dup = False
+    for prev in reversed(merged[-4:]):
+      if isinstance(prev, LTAnno):
+        continue
+      # OVERLAID means near-identical position: real copies sit within
+      # ~0.05pt, while a legitimate geminate (λλ, δδ, even "11") is a full
+      # advance width apart — a loose threshold once ate every double
+      # letter of the book
+      if c.x0 - prev.x0 > 0.15 * max(c.size, 1.0):
+        break
+      if prev.get_text() == c.get_text() and abs(c.y0 - prev.y0) < 1.5:
+        dup = True
+        break
+    if dup:
+      continue
+    if merged:
+      last_char = next(
+        (p for p in reversed(merged) if isinstance(p, LTChar)), None)
+      if last_char is not None:
+        gap = c.x0 - last_char.x1
+        size = max(last_char.size, c.size, 1.0)
+        if gap > 1.2 * size:
+          merged.append(LTAnno("  "))
+        elif gap > 0.18 * size:
+          merged.append(LTAnno(" "))
+    merged.append(c)
+  return merged
+
+
 def _lines_of(layout) -> list[Line]:
-  lines: list[Line] = []
+  frags: list[tuple] = []
   for el in layout:
     for tl in _iter_text_lines(el):
       items = [c for c in tl if isinstance(c, (LTChar, LTAnno))]
       chars = [c for c in items if isinstance(c, LTChar)]
       if not chars:
         continue
-      text = "".join(c.get_text() for c in items).strip()
-      if not text:
+      if not "".join(c.get_text() for c in items).strip():
         continue
-      sizes = Counter(round(c.size, 1) for c in chars)
-      fonts = Counter(c.fontname.split("+")[-1] for c in chars)
-      decoded = _decode_line(items)
-      greek = sum(1 for ch in decoded if is_greek_char(ch))
-      letters = sum(1 for ch in decoded if ch.isalpha()) or 1
-      lines.append(Line(
-        text=text,
-        decoded=decoded,
-        y0=tl.y0, y1=tl.y1, x0=tl.x0, x1=tl.x1,
-        size=sizes.most_common(1)[0][0],
-        fonts=dict(fonts),
-        greek_ratio=greek / letters,
-      ))
-  lines.sort(key=lambda ln: (-ln.y0, ln.x0))
-  return _merge_fragments(lines)
+      size = Counter(round(c.size, 1) for c in chars).most_common(1)[0][0]
+      frags.append((tl.y0, tl.y1, tl.x0, tl.x1, items, size))
 
+  frags.sort(key=lambda f: (-f[0], f[2]))
 
-def _merge_fragments(lines: list[Line]) -> list[Line]:
-  """Re-join fragments of one PHYSICAL line.
-
-  pdfminer splits a justified line into several LTTextLines when inline
-  superscripts change the box height; sorted by y0 alone the fragments land
-  in the wrong reading order (observed: "tur, coactus." displaced two lines
-  down). Fragments whose vertical extents overlap by more than half of the
-  smaller extent belong to one line and are joined in x order.
-  """
-  merged: list[Line] = []
-  for ln in lines:
-    if merged:
-      prev = merged[-1]
-      overlap = min(prev.y1, ln.y1) - max(prev.y0, ln.y0)
-      span = min(prev.y1 - prev.y0, ln.y1 - ln.y0)
-      first, second = (prev, ln) if prev.x0 <= ln.x0 else (ln, prev)
-      # horizontally adjacent only: a folio printed at the far end of the
-      # running-head line shares its y but is a separate zone, never joined
-      x_gap = second.x0 - first.x1
+  # group fragments of one physical line: vertical overlap AND horizontal
+  # adjacency (a folio at the far end of the running-head line shares its
+  # y but is a separate zone, never joined)
+  groups: list[list[tuple]] = []
+  for f in frags:
+    if groups:
+      g = groups[-1]
+      gy0 = min(x[0] for x in g)
+      gy1 = max(x[1] for x in g)
+      gx1 = max(x[3] for x in g)
+      overlap = min(gy1, f[1]) - max(gy0, f[0])
+      span = min(gy1 - gy0, f[1] - f[0])
+      x_gap = f[2] - gx1
       if span > 0 and overlap / span > 0.5 \
-         and x_gap < 3 * max(first.size, second.size):
-        fonts = dict(first.fonts)
-        for f, n in second.fonts.items():
-          fonts[f] = fonts.get(f, 0) + n
-        # a wide horizontal gap is typographic information (apparatus bands
-        # separate same-line entries by ~2em): preserved as a double space,
-        # the idiom downstream entry-splitting relies on
-        sep = "  " if x_gap > 1.2 * max(first.size, second.size) else " "
-        decoded = f"{first.decoded}{sep}{second.decoded}"
-        greek = sum(1 for ch in decoded if is_greek_char(ch))
-        letters = sum(1 for ch in decoded if ch.isalpha()) or 1
-        wide = first if (first.x1 - first.x0) >= (second.x1 - second.x0) else second
-        merged[-1] = Line(
-          text=f"{first.text}{sep}{second.text}",
-          decoded=decoded,
-          y0=min(prev.y0, ln.y0), y1=max(prev.y1, ln.y1),
-          x0=min(prev.x0, ln.x0), x1=max(prev.x1, ln.x1),
-          size=wide.size,
-          fonts=fonts,
-          greek_ratio=greek / letters,
-        )
+         and x_gap < 3 * max(f[5], g[0][5]):
+        g.append(f)
         continue
-    merged.append(ln)
-  return merged
+    groups.append([f])
+
+  lines: list[Line] = []
+  for g in groups:
+    if len(g) == 1:
+      y0, y1, x0, x1, items, _ = g[0]
+      ln = _make_line(items, y0, y1, x0, x1)
+    else:
+      items = _merge_group_items(g)
+      ln = _make_line(
+        items,
+        min(x[0] for x in g), max(x[1] for x in g),
+        min(x[2] for x in g), max(x[3] for x in g),
+      )
+    if ln is not None:
+      lines.append(ln)
+  return lines
 
 
 def _pitch(lines: list[Line]) -> float:
