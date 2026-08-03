@@ -202,3 +202,36 @@ bug, not just the instance.
 `plh'roun`): the circumflex is genuinely typeset on the eta in the edition.
 The decoder reproduces the page faithfully — including its typos. Correcting
 them would be fabrication; flagging them is the attestation layer's job.
+
+## 8. Phase 1 — layer separation (2026-08-03)
+
+`regreek.layers` classifies each page into bands — `greek_text`,
+`translation`, `apparatus`, `notes`, `heading`, `running_head`,
+`page_number` — from geometry and typography alone: the modal body pitch,
+font-size registers, vertical gaps, script signatures, centering. No content
+understanding, no ML; lines are never reordered or merged, and each band
+carries the evidence for its label plus a confidence.
+
+Empirical grounding (measured on a bilingual critical edition): Greek body
+10 pt; facing translation 11 pt; apparatus 8–9 pt opening after a gap of
+~2.4× the body pitch; running head and page number isolated by >1.6× pitch.
+The apparatus/notes label follows page context (Greek page → apparatus;
+translation page → notes/apparatus fontium).
+
+Validation over 55 systematically sampled pages of both volumes:
+running head and page number detected 55/55; 459 apparatus-sigla matches
+(prop./coni./codd./editor names) routed 97.8 % into the apparatus band and
+**0 % into the Greek text band**. The 10 residual matches sit on two page
+types outside the text+apparatus model, both known limitations:
+
+- **front matter** (conspectus siglorum, introduction) — no 10/11 pt body
+  register exists, so the page classifies as body text;
+- **note-overflow pages** — translation-note continuations that fill a page
+  entirely in the notes register, leaving no size boundary to detect.
+
+Both would need cross-page state to resolve; deliberately left honest
+rather than heuristically patched.
+
+Inline witness references (`[fol. 94 v° : A]`, `[p. 144 : B]`, `[PG …]`)
+are extracted per band into `inline_refs` and left in place in the text
+(fidelity over cleaning).

@@ -32,6 +32,14 @@ def main(argv: list[str] | None = None) -> int:
                   help="list known encodings (table ids)")
   ap.add_argument("--page", type=int, default=None, help="0-based page number (default: all)")
   ap.add_argument("--json", action="store_true", help="emit JSON with provenance records")
+  ap.add_argument("--layers", action="store_true",
+                  help="separate page layers (text/apparatus/translation/margins) as JSON")
+  ap.add_argument("--md", action="store_true",
+                  help="layer-separated structured Markdown (one section per layer)")
+  ap.add_argument("--layer", default=None,
+                  metavar="NAME",
+                  help="print only one layer as text: greek_text|translation|"
+                       "apparatus|notes|heading|running_head")
   ap.add_argument("--list-fonts", action="store_true",
                   help="list known legacy fonts found (first 20 pages)")
   args = ap.parse_args(argv)
@@ -73,6 +81,44 @@ def main(argv: list[str] | None = None) -> int:
     return 0
 
   pages = [args.page] if args.page is not None else None
+
+  if args.layers or args.layer or args.md:
+    from .layers import layer_pages
+    got = False
+    for pg in layer_pages(args.pdf, pages=pages):
+      if args.md:
+        if not pg.bands:
+          continue
+        got = True
+        print(f"## page {pg.page}\n")
+        for b in pg.bands:
+          refs = f"  \n*refs: {', '.join(b.inline_refs)}*" if b.inline_refs else ""
+          print(f"### {b.layer}  \n<sub>confidence {b.confidence:.2f} — {b.evidence}</sub>{refs}\n")
+          print(b.text + "\n")
+        continue
+      if args.layer:
+        text = pg.layer_text(args.layer)
+        if text:
+          got = True
+          print(text)
+        continue
+      got = True
+      print(json.dumps({
+        "page": pg.page,
+        "bands": [
+          {
+            "layer": b.layer,
+            "confidence": b.confidence,
+            "evidence": b.evidence,
+            "bbox": [round(v, 1) for v in b.bbox],
+            "inline_refs": b.inline_refs,
+            "text": b.text,
+          }
+          for b in pg.bands
+        ],
+      }, ensure_ascii=False))
+    return 0 if got else 1
+
   any_output = False
   for page in extract_runs(args.pdf, pages=pages):
     decoded = decode_page(page)

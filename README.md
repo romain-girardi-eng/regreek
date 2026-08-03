@@ -1,6 +1,8 @@
 # regreek
 
-**Re-Greek your mojibake: recover polytonic Greek from documents typeset in pre-Unicode Greek fonts.**
+**Re-Greek your mojibake: recover polytonic Greek from documents typeset in pre-Unicode Greek fonts — and separate the page layers of critical editions.**
+
+![regreek demo: a critical-edition page, its mojibake extraction, layer detection, and structured Markdown output](docs/demo.gif)
 
 Thousands of scholarly PDFs, Word documents, and web pages produced between
 roughly 1985 and 2005 encode Ancient Greek with legacy fonts — Graeca,
@@ -115,6 +117,36 @@ be validated properly say so, in-file and above.
 - **Raw text, not just PDFs** — legacy Greek pasted from old Word documents,
   databases, or 1990s web pages, with deterministic encoding auto-detection.
 
+## Layer separation (critical editions)
+
+A critical-edition page co-registers several layers: the constituted text,
+the apparatus criticus at the foot, running heads, page numbers, headings,
+a facing-page translation, inline witness references. Fed flat to a search
+engine or a language model, they produce the worst scholarly failure mode:
+**an apparatus variant quoted as the constituted text**.
+
+`regreek` separates the layers deterministically — font-size registers,
+vertical gaps, script signatures; geometry and typography only, no ML, no
+content guessing — and never reorders or merges lines:
+
+```console
+regreek edition.pdf --layer greek_text   # the constituted text, alone
+regreek edition.pdf --layer apparatus    # the apparatus, alone
+regreek edition.pdf --layers             # all layers as JSON + evidence
+regreek edition.pdf --md                 # structured Markdown per layer
+```
+
+Layers: `greek_text`, `translation`, `apparatus`, `notes`, `heading`,
+`running_head`, `page_number`. Every band carries its evidence (the measured
+size register and gap that justified the label) and a confidence; inline
+witness references (`[fol. 94 v° : A]`) are extracted alongside, not removed.
+
+Validation on 55 pages of a bilingual critical edition (two volumes):
+running heads and page numbers 55/55; **zero apparatus sigla leaked into the
+Greek text layer**; overall sigla routing 97.8 % (the residue sits on
+translation-side note-overflow and front-matter pages, both documented
+limitations in `FINDINGS.md`).
+
 ## CLI
 
 ```console
@@ -125,6 +157,7 @@ regreek FILE.pdf --list-fonts # which legacy fonts are present
 regreek --text 'lo/goj'       # decode a string (auto-detect)
 regreek --stdin --encoding graeca < dump.txt
 regreek --list-encodings
+regreek FILE.pdf --layers     # layer separation (see above)
 ```
 
 Exit status is non-zero when no known legacy content is found; unmapped
@@ -150,9 +183,10 @@ for page in extract_runs("edition.pdf", pages=[300]):
 - **Not Beta Code conversion.** For plain Beta Code (`*)ODUSSEU/S`), use
   [`beta-code`](https://github.com/perseids-tools/beta-code-py). SPIonic is
   Beta-Code-*like* but a distinct font encoding, which is why it lives here.
-- **Not layout analysis.** Apparatus criticus, facing-page translations and
-  marginal numbering are a separate, harder problem. This package is the
-  character-level foundation for it.
+- **Not full layout semantics.** Layer separation (above) isolates the
+  apparatus band; *parsing* the apparatus into lemma/readings/witnesses
+  (TEI `<app>/<lem>/<rdg>`) is a further, harder problem and deliberately
+  out of scope for now.
 
 ## Contributing a font
 
