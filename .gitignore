@@ -9,3 +9,6 @@ __pycache__/
 dist/
 build/
 .venv/
+
+# local working instructions, never published
+CLAUDE.md
