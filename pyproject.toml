@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "greek-legacy-decode"
+name = "regreek"
 version = "0.1.0"
 description = "Recover polytonic Unicode Greek from pre-Unicode font encodings (Graeca, SPIonic, Bwgrkl, Odyssea…) in PDFs and text"
 readme = "README.md"
@@ -37,17 +37,17 @@ dependencies = [
 dev = ["pytest>=8", "ruff>=0.5"]
 
 [project.urls]
-Homepage = "https://github.com/romain-girardi-eng/greek-legacy-decode"
-Issues = "https://github.com/romain-girardi-eng/greek-legacy-decode/issues"
+Homepage = "https://github.com/romain-girardi-eng/regreek"
+Issues = "https://github.com/romain-girardi-eng/regreek/issues"
 
 [project.scripts]
-greek-legacy-decode = "greek_legacy_decode.cli:main"
+regreek = "regreek.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-greek_legacy_decode = ["tables/*.json"]
+regreek = ["tables/*.json"]
 
 [tool.ruff]
 line-length = 100

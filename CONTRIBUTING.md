@@ -9,7 +9,7 @@ target font, ideally of a work that also exists in a public reference corpus
 honestly validated. A few hundred words are often enough.
 
 Open an issue with:
-- the font name (as reported by `greek-legacy-decode FILE.pdf --list-fonts`,
+- the font name (as reported by `regreek FILE.pdf --list-fonts`,
   or the name of the font your document uses);
 - what work the text is (author, title, edition if known);
 - the file, or a link to it if it is publicly available.

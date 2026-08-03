@@ -10,9 +10,9 @@ import unicodedata
 
 import pytest
 
-from greek_legacy_decode import tokenize
-from greek_legacy_decode.decoder import TableDecoder
-from greek_legacy_decode.registry import load_tables, table_for_font
+from regreek import tokenize
+from regreek.decoder import TableDecoder
+from regreek.registry import load_tables, table_for_font
 
 
 def dec(font: str) -> TableDecoder:
@@ -182,7 +182,7 @@ def test_unknown_codes_flagged_never_swallowed() -> None:
 
 def test_spionic_ascii_chart() -> None:
   """SPIonic (public-domain chart, Beta-Code-style: marks follow the vowel)."""
-  from greek_legacy_decode.text import decode_text
+  from regreek.text import decode_text
 
   cases = [
     ("i3na mh\\ pare/lqh| u9ma~j o9 peirasmo/j", "ἵνα μὴ παρέλθῃ ὑμᾶς ὁ πειρασμός"),
@@ -197,7 +197,7 @@ def test_spionic_ascii_chart() -> None:
 def test_spionic_digits_are_codes_not_separators() -> None:
   """Regression: default digit-splitting must not eat SPIonic breathings
   (9 = rough breathing: u9ma~j = ὑμᾶς, not υ + μᾶς)."""
-  from greek_legacy_decode.text import decode_text
+  from regreek.text import decode_text
 
   r = decode_text("u9ma~j", encoding="spionic-ascii")
   assert r.text == "ὑμᾶς"
@@ -205,7 +205,7 @@ def test_spionic_digits_are_codes_not_separators() -> None:
 
 
 def test_autodetection_discriminates_encodings() -> None:
-  from greek_legacy_decode.text import decode_text
+  from regreek.text import decode_text
 
   spionic = decode_text("i3na mh\\ pare/lqh| u9ma~j o9 peirasmo/j")
   assert spionic.table_id == "spionic-ascii"
@@ -215,7 +215,7 @@ def test_autodetection_discriminates_encodings() -> None:
 
 
 def test_unique_table_ids() -> None:
-  from greek_legacy_decode.text import tables_by_id
+  from regreek.text import tables_by_id
 
   ids = tables_by_id()
   assert len(ids) == len(load_tables())

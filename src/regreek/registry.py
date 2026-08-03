@@ -32,7 +32,7 @@ def strip_subset_prefix(font_name: str) -> str:
 def load_tables() -> list[dict]:
   tables = []
   for name in _TABLE_FILES:
-    with resources.files("greek_legacy_decode.tables").joinpath(name).open(encoding="utf-8") as f:
+    with resources.files("regreek.tables").joinpath(name).open(encoding="utf-8") as f:
       tables.append(json.load(f))
   return tables
 

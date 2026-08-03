@@ -1,4 +1,4 @@
-"""greek-legacy-decode: legacy (pre-Unicode) Greek font decoding for PDFs.
+"""regreek: legacy (pre-Unicode) Greek font decoding for PDFs.
 
 Tables were derived clean-room by aligning real critical-edition PDFs with the
 same texts in the TLG-E corpus; every mapping carries provenance and measured

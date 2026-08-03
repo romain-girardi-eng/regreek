@@ -1,12 +1,12 @@
 cff-version: 1.2.0
 message: "If you use this software in your research, please cite it as below."
-title: "greek-legacy-decode: recovering polytonic Greek from pre-Unicode font encodings"
+title: "regreek: recovering polytonic Greek from pre-Unicode font encodings"
 type: software
 authors:
   - family-names: Girardi
     given-names: Romain
     affiliation: "CEPAM UMR 7264, Université Côte d'Azur"
-repository-code: "https://github.com/romain-girardi-eng/greek-legacy-decode"
+repository-code: "https://github.com/romain-girardi-eng/regreek"
 license: MIT
 keywords:
   - ancient-greek

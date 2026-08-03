@@ -2,7 +2,7 @@
 
 Usage::
 
-  greek-legacy-decode <pdf> [--page N] [--json] [--list-fonts]
+  regreek <pdf> [--page N] [--json] [--list-fonts]
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from .text import decode_text, tables_by_id
 
 def main(argv: list[str] | None = None) -> int:
   ap = argparse.ArgumentParser(
-    prog="greek-legacy-decode",
+    prog="regreek",
     description="Decode legacy Greek fonts in born-digital PDFs to Unicode",
   )
   ap.add_argument("pdf", nargs="?", default=None,

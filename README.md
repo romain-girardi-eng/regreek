@@ -1,6 +1,6 @@
-# greek-legacy-decode
+# regreek
 
-**Recover polytonic Greek from documents typeset in pre-Unicode Greek fonts.**
+**Re-Greek your mojibake: recover polytonic Greek from documents typeset in pre-Unicode Greek fonts.**
 
 Thousands of scholarly PDFs, Word documents, and web pages produced between
 roughly 1985 and 2005 encode Ancient Greek with legacy fonts — Graeca,
@@ -23,22 +23,22 @@ reproduces the mojibake, because the fonts' own `ToUnicode` maps point at
 Latin. The affected documents include critical editions of exactly the texts
 scholars most need machine-readable.
 
-`greek-legacy-decode` turns the keystroke stream back into NFC-normalised
+`regreek` turns the keystroke stream back into NFC-normalised
 polytonic Unicode Greek, **deterministically**, with a per-character
 provenance record and a hard guarantee: **it never invents text**.
 
 ```console
-$ greek-legacy-decode edition.pdf --page 300
+$ regreek edition.pdf --page 300
 --- page 300
 Ὥς τε τεμόντας ὑμᾶς ἀπὸ τῶν ψυχῶν ὑμῶν τὴν ἐλπίδα ταύτην …
 
-$ greek-legacy-decode --text 'i3na mh\ pare/lqh| u9ma~j o9 peirasmo/j'
+$ regreek --text 'i3na mh\ pare/lqh| u9ma~j o9 peirasmo/j'
 ἵνα μὴ παρέλθῃ ὑμᾶς ὁ πειρασμός
 [encoding: spionic-ascii, auto-detected]
 ```
 
 ```python
-from greek_legacy_decode.text import decode_text
+from regreek.text import decode_text
 
 r = decode_text("ou0k e0n u9posta/sei ou0si/aj geno/menoj")   # auto-detects SPIonic
 r.text          # 'οὐκ ἐν ὑποστάσει οὐσίας γενόμενος'
@@ -118,20 +118,20 @@ be validated properly say so, in-file and above.
 ## CLI
 
 ```console
-greek-legacy-decode FILE.pdf              # decode all pages
-greek-legacy-decode FILE.pdf --page 12    # one page (0-based)
-greek-legacy-decode FILE.pdf --json       # JSON with provenance records
-greek-legacy-decode FILE.pdf --list-fonts # which legacy fonts are present
-greek-legacy-decode --text 'lo/goj'       # decode a string (auto-detect)
-greek-legacy-decode --stdin --encoding graeca < dump.txt
-greek-legacy-decode --list-encodings
+regreek FILE.pdf              # decode all pages
+regreek FILE.pdf --page 12    # one page (0-based)
+regreek FILE.pdf --json       # JSON with provenance records
+regreek FILE.pdf --list-fonts # which legacy fonts are present
+regreek --text 'lo/goj'       # decode a string (auto-detect)
+regreek --stdin --encoding graeca < dump.txt
+regreek --list-encodings
 ```
 
 Exit status is non-zero when no known legacy content is found; unmapped
 codes are reported on stderr.
 
 ```python
-from greek_legacy_decode import extract_runs, decode_page
+from regreek import extract_runs, decode_page
 
 for page in extract_runs("edition.pdf", pages=[300]):
   decoded = decode_page(page)
@@ -169,7 +169,7 @@ documentation).
 ## Install
 
 ```console
-pip install greek-legacy-decode
+pip install regreek
 ```
 
 Python ≥ 3.10. Single runtime dependency: `pdfminer.six` (MIT).
