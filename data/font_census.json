@@ -1,0 +1,137 @@
+{
+ "description": "Aggregated census of embedded fonts across a private research corpus of 601 scholarly PDFs (classics/patristics, typeset 1985-2020). No document identities are included.",
+ "documents_scanned": 601,
+ "distinct_font_names": 1295,
+ "font_class_totals": {
+  "latin": 5008,
+  "unicode_greek": 201,
+  "legacy_greek": 55
+ },
+ "legacy_greek_fonts": {
+  "Graeca": {
+   "class": "legacy_greek",
+   "docs": 4,
+   "pages": 1406
+  },
+  "KadmosU": {
+   "class": "legacy_greek",
+   "docs": 2,
+   "pages": 504
+  },
+  "Bwgrkl": {
+   "class": "legacy_greek",
+   "docs": 5,
+   "pages": 200
+  },
+  "PorsonForOUP-Reg-Identity-H": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 113
+  },
+  "Odyssea": {
+   "class": "legacy_greek",
+   "docs": 3,
+   "pages": 96
+  },
+  "SirbaGRK": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 68
+  },
+  "SPIonic-Identity-H": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 54
+  },
+  "GrecMonotype": {
+   "class": "legacy_greek",
+   "docs": 4,
+   "pages": 48
+  },
+  "GrecAccMonotype": {
+   "class": "legacy_greek",
+   "docs": 4,
+   "pages": 48
+  },
+  "GrecAccentAutres": {
+   "class": "legacy_greek",
+   "docs": 2,
+   "pages": 38
+  },
+  "GraecaII": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 34
+  },
+  "TimesGreek": {
+   "class": "legacy_greek",
+   "docs": 2,
+   "pages": 20
+  },
+  "SymbolGreekII": {
+   "class": "legacy_greek",
+   "docs": 2,
+   "pages": 17
+  },
+  "FFPorson-Identity-H": {
+   "class": "legacy_greek",
+   "docs": 2,
+   "pages": 14
+  },
+  "SirbaGRK-Italic": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 7
+  },
+  "Odyssea-Bold": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 6
+  },
+  "TimesGreekSF": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 4
+  },
+  "GrecMonotypeA": {
+   "class": "legacy_greek",
+   "docs": 2,
+   "pages": 2
+  },
+  "Odyssea-Italic": {
+   "class": "legacy_greek",
+   "docs": 2,
+   "pages": 2
+  },
+  "SymbolGreek": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 2
+  },
+  "GraecaII-Bold": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 1
+  },
+  "Kadmos": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 1
+  },
+  "PorsonForOUP-Reg": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 1
+  },
+  "PorsonForOUPRegular": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 1
+  },
+  "PorsonGreek": {
+   "class": "legacy_greek",
+   "docs": 1,
+   "pages": 1
+  }
+ }
+}

@@ -1,0 +1,788 @@
+{
+ "font": "GrecMonotype",
+ "id": "grecmonotype",
+ "match": [
+  "GrecMonotype",
+  "GrecAcc"
+ ],
+ "family": "monotype-two-font",
+ "companion": {
+  "accent_font_prefixes": [
+   "GrecAcc"
+  ],
+  "pua_offset": 57344,
+  "note": "base letters live in GrecMonotype; accented vowels are separate glyphs in GrecAccMonotype. Extraction maps every accent-font char c to chr(0xE000+ord(c)) before decoding, so both fonts merge into one stream."
+ },
+ "derivation": {
+  "method": "lexicon-constrained decipherment (frequency-weighted TLG-E lexicon), iterated; 5 glyphs completed from the font's systematic vowel-block layout (X0=acute X1=grave X2=circumflex X3=smooth X4=rough X5=smooth+acute X6=smooth+grave X7=rough+acute), each attestation-compatible",
+  "source_pdf": "Eliasson 2009, Sur la conception plotinienne du destin (Plotinus III.1)",
+  "attestation_resolutions": {
+   "U+E040": {
+    "name": "unit:έ",
+    "attested": 47,
+    "of": 47,
+    "logfreq": 312.1,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ε",
+     11,
+     32.1
+    ],
+    "spec": {
+     "unit": "έ"
+    }
+   },
+   "U+E061": {
+    "name": "unit:ὶ",
+    "attested": 79,
+    "of": 79,
+    "logfreq": 1165.4,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ί",
+     79,
+     792.4
+    ],
+    "spec": {
+     "unit": "ὶ"
+    }
+   },
+   "U+E043": {
+    "name": "unit:ἐ",
+    "attested": 23,
+    "of": 24,
+    "logfreq": 268.8,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ε",
+     23,
+     143.3
+    ],
+    "spec": {
+     "unit": "ἐ"
+    }
+   },
+   "U+E030": {
+    "name": "unit:ά",
+    "attested": 52,
+    "of": 52,
+    "logfreq": 418.5,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:α",
+     28,
+     64.1
+    ],
+    "spec": {
+     "unit": "ά"
+    }
+   },
+   "U+E062": {
+    "name": "unit:ῖ",
+    "attested": 23,
+    "of": 23,
+    "logfreq": 224.4,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ι",
+     16,
+     64.2
+    ],
+    "spec": {
+     "unit": "ῖ"
+    }
+   },
+   "U+E031": {
+    "name": "unit:ὰ",
+    "attested": 59,
+    "of": 60,
+    "logfreq": 736.0,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ά",
+     60,
+     545.0
+    ],
+    "spec": {
+     "unit": "ὰ"
+    }
+   },
+   "U+E071": {
+    "name": "unit:ὸ",
+    "attested": 55,
+    "of": 55,
+    "logfreq": 707.0,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ό",
+     55,
+     501.6
+    ],
+    "spec": {
+     "unit": "ὸ"
+    }
+   },
+   "U+E033": {
+    "name": "unit:ἀ",
+    "attested": 11,
+    "of": 13,
+    "logfreq": 44.7,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ἄ",
+     8,
+     26.8
+    ],
+    "spec": {
+     "unit": "ἀ"
+    }
+   },
+   "U+E042": {
+    "name": "apos",
+    "attested": 17,
+    "of": 18,
+    "logfreq": 195.2,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ά",
+     17,
+     110.4
+    ],
+    "spec": {
+     "char": "’"
+    }
+   },
+   "U+E041": {
+    "name": "unit:ὲ",
+    "attested": 52,
+    "of": 52,
+    "logfreq": 721.7,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:έ",
+     52,
+     577.7
+    ],
+    "spec": {
+     "unit": "ὲ"
+    }
+   },
+   "U+E054": {
+    "name": "unit:ὁ",
+    "attested": 10,
+    "of": 12,
+    "logfreq": 136.3,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ἔ",
+     11,
+     74.3
+    ],
+    "spec": {
+     "unit": "ὁ"
+    }
+   },
+   "U+E0A2": {
+    "name": "unit:ῦ",
+    "attested": 46,
+    "of": 46,
+    "logfreq": 455.9,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ύ",
+     30,
+     148.3
+    ],
+    "spec": {
+     "unit": "ῦ"
+    }
+   },
+   "U+E0A3": {
+    "name": "unit:ὐ",
+    "attested": 17,
+    "of": 17,
+    "logfreq": 210.2,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ὔ",
+     17,
+     129.4
+    ],
+    "spec": {
+     "unit": "ὐ"
+    }
+   },
+   "U+E070": {
+    "name": "unit:ό",
+    "attested": 30,
+    "of": 30,
+    "logfreq": 240.1,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ο",
+     20,
+     42.5
+    ],
+    "spec": {
+     "unit": "ό"
+    }
+   },
+   "U+E051": {
+    "name": "unit:ὴ",
+    "attested": 35,
+    "of": 35,
+    "logfreq": 423.9,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ή",
+     35,
+     313.6
+    ],
+    "spec": {
+     "unit": "ὴ"
+    }
+   },
+   "U+E0B2": {
+    "name": "unit:ῶ",
+    "attested": 22,
+    "of": 22,
+    "logfreq": 249.9,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ᾶ",
+     19,
+     109.4
+    ],
+    "spec": {
+     "unit": "ῶ"
+    }
+   },
+   "U+E052": {
+    "name": "unit:ῆ",
+    "attested": 24,
+    "of": 26,
+    "logfreq": 248.6,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ά",
+     20,
+     134.9
+    ],
+    "spec": {
+     "unit": "ῆ"
+    }
+   },
+   "U+E045": {
+    "name": "unit:ἔ",
+    "attested": 25,
+    "of": 25,
+    "logfreq": 241.9,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ἐ",
+     19,
+     72.7
+    ],
+    "spec": {
+     "unit": "ἔ"
+    }
+   },
+   "U+E077": {
+    "name": "unit:ὅ",
+    "attested": 22,
+    "of": 22,
+    "logfreq": 231.0,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:α",
+     22,
+     64.7
+    ],
+    "spec": {
+     "unit": "ὅ"
+    }
+   },
+   "U+E035": {
+    "name": "unit:ἄ",
+    "attested": 19,
+    "of": 19,
+    "logfreq": 167.5,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:α",
+     13,
+     37.0
+    ],
+    "spec": {
+     "unit": "ἄ"
+    }
+   },
+   "U+E0B0": {
+    "name": "unit:ώ",
+    "attested": 9,
+    "of": 10,
+    "logfreq": 68.2,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ω",
+     6,
+     11.5
+    ],
+    "spec": {
+     "unit": "ώ"
+    }
+   },
+   "U+E050": {
+    "name": "unit:ή",
+    "attested": 11,
+    "of": 11,
+    "logfreq": 63.7,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:έ",
+     4,
+     23.2
+    ],
+    "spec": {
+     "unit": "ή"
+    }
+   },
+   "U+E032": {
+    "name": "unit:ᾶ",
+    "attested": 12,
+    "of": 12,
+    "logfreq": 95.8,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ά",
+     12,
+     34.8
+    ],
+    "spec": {
+     "unit": "ᾶ"
+    }
+   },
+   "U+E065": {
+    "name": "unit:ἴ",
+    "attested": 12,
+    "of": 12,
+    "logfreq": 109.3,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ί",
+     8,
+     19.2
+    ],
+    "spec": {
+     "unit": "ἴ"
+    }
+   },
+   "U+E0A9": {
+    "name": "unit:ὖ",
+    "attested": 10,
+    "of": 10,
+    "logfreq": 104.1,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "marks:reversed comacute accent",
+     10,
+     67.2
+    ],
+    "spec": {
+     "unit": "ὖ"
+    }
+   },
+   "U+E047": {
+    "name": "unit:ἕ",
+    "attested": 8,
+    "of": 8,
+    "logfreq": 64.6,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ἄ",
+     6,
+     19.6
+    ],
+    "spec": {
+     "unit": "ἕ"
+    }
+   },
+   "U+E069": {
+    "name": "unit:ἶ",
+    "attested": 8,
+    "of": 8,
+    "logfreq": 95.6,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ἷ",
+     8,
+     34.9
+    ],
+    "spec": {
+     "unit": "ἶ"
+    }
+   },
+   "U+E075": {
+    "name": "unit:ὄ",
+    "attested": 3,
+    "of": 3,
+    "logfreq": 30.2,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:α",
+     3,
+     16.2
+    ],
+    "spec": {
+     "unit": "ὄ"
+    }
+   },
+   "U+E0B4": {
+    "name": "unit:ὡ",
+    "attested": 4,
+    "of": 4,
+    "logfreq": 52.2,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ἐ",
+     4,
+     44.4
+    ],
+    "spec": {
+     "unit": "ὡ"
+    }
+   },
+   "U+E067": {
+    "name": "unit:ἵ",
+    "attested": 4,
+    "of": 4,
+    "logfreq": 29.9,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ί",
+     4,
+     14.3
+    ],
+    "spec": {
+     "unit": "ἵ"
+    }
+   },
+   "U+E06A": {
+    "name": "unit:ἷ",
+    "attested": 4,
+    "of": 4,
+    "logfreq": 43.4,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ἶ",
+     4,
+     22.9
+    ],
+    "spec": {
+     "unit": "ἷ"
+    }
+   },
+   "U+E0B7": {
+    "name": "unit:ὥ",
+    "attested": 4,
+    "of": 4,
+    "logfreq": 44.5,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ἐ",
+     4,
+     23.4
+    ],
+    "spec": {
+     "unit": "ὥ"
+    }
+   },
+   "U+E0A5": {
+    "name": "unit:ὔ",
+    "attested": 3,
+    "of": 3,
+    "logfreq": 27.7,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "marks:reversed comacute accent",
+     3,
+     19.3
+    ],
+    "spec": {
+     "unit": "ὔ"
+    }
+   },
+   "U+E064": {
+    "name": "unit:ἱ",
+    "attested": 33,
+    "of": 33,
+    "logfreq": 201.2,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ἰ",
+     28,
+     52.4
+    ],
+    "spec": {
+     "unit": "ἱ"
+    }
+   },
+   "U+E063": {
+    "name": "unit:ἰ",
+    "attested": 30,
+    "of": 31,
+    "logfreq": 201.9,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ι",
+     25,
+     155.0
+    ],
+    "spec": {
+     "unit": "ἰ"
+    }
+   },
+   "U+E074": {
+    "name": "unit:ὁ",
+    "attested": 17,
+    "of": 18,
+    "logfreq": 138.2,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ἑ",
+     9,
+     51.0
+    ],
+    "spec": {
+     "unit": "ὁ"
+    }
+   },
+   "U+E044": {
+    "name": "unit:ἑ",
+    "attested": 13,
+    "of": 13,
+    "logfreq": 77.4,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ἐ",
+     7,
+     12.8
+    ],
+    "spec": {
+     "unit": "ἑ"
+    }
+   },
+   "U+E0A4": {
+    "name": "unit:ὑ",
+    "attested": 7,
+    "of": 8,
+    "logfreq": 46.7,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ὐ",
+     5,
+     38.7
+    ],
+    "spec": {
+     "unit": "ὑ"
+    }
+   },
+   "U+E073": {
+    "name": "unit:ὀ",
+    "attested": 5,
+    "of": 5,
+    "logfreq": 33.0,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ὁ",
+     3,
+     2.5
+    ],
+    "spec": {
+     "unit": "ὀ"
+    }
+   },
+   "U+E0C5": {
+    "name": "apos",
+    "attested": 3,
+    "of": 3,
+    "logfreq": 18.9,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ῳ",
+     3,
+     14.3
+    ],
+    "spec": {
+     "char": "’"
+    }
+   },
+   "U+E053": {
+    "name": "unit:ἠ",
+    "attested": 3,
+    "of": 3,
+    "logfreq": 10.3,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ἄ",
+     1,
+     10.3
+    ],
+    "spec": {
+     "unit": "ἠ"
+    }
+   },
+   "U+E0C3": {
+    "name": "unit:ῃ",
+    "attested": 10,
+    "of": 10,
+    "logfreq": 56.9,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "apos",
+     10,
+     48.0
+    ],
+    "spec": {
+     "unit": "ῃ"
+    }
+   }
+  },
+  "layout_inferences": {
+   "U+E054": "ἡ (vowel-block layout + attestation-compatible)",
+   "U+E0CC": "ῇ (vowel-block layout + attestation-compatible)",
+   "U+E0A1": "ὺ (vowel-block layout + attestation-compatible)",
+   "U+E036": "ἂ (vowel-block layout + attestation-compatible)",
+   "U+E056": "ἢ (vowel-block layout + attestation-compatible)"
+  }
+ },
+ "validation": {
+  "same_document": {
+   "tokens": 1323,
+   "coverage": 0.9849,
+   "attestation_base_tlg": 0.9946,
+   "attestation_accented_tlg": 0.9854
+  },
+  "held_out": "Sharples paper: only 6 Greek tokens - statistically meaningless, reported for completeness (6/6 base-attested, 4/5 accented)",
+  "warning": "no substantial held-out document; several rare glyphs remain unmapped"
+ },
+ "letters": {
+  "a": "α",
+  "b": "β",
+  "g": "γ",
+  "d": "δ",
+  "e": "ε",
+  "z": "ζ",
+  "h": "η",
+  "q": "θ",
+  "i": "ι",
+  "k": "κ",
+  "l": "λ",
+  "m": "μ",
+  "n": "ν",
+  "x": "ξ",
+  "o": "ο",
+  "p": "π",
+  "r": "ρ",
+  "s": "σ",
+  "t": "τ",
+  "u": "υ",
+  "f": "φ",
+  "c": "χ",
+  "y": "ψ",
+  "w": "ω",
+  "A": "Α",
+  "B": "Β",
+  "G": "Γ",
+  "D": "Δ",
+  "E": "Ε",
+  "Z": "Ζ",
+  "H": "Η",
+  "Q": "Θ",
+  "I": "Ι",
+  "K": "Κ",
+  "L": "Λ",
+  "M": "Μ",
+  "N": "Ν",
+  "X": "Ξ",
+  "O": "Ο",
+  "P": "Π",
+  "R": "Ρ",
+  "S": "Σ",
+  "T": "Τ",
+  "U": "Υ",
+  "F": "Φ",
+  "C": "Χ",
+  "Y": "Ψ",
+  "W": "Ω",
+  "V": "ς",
+  "": "έ",
+  "": "ὶ",
+  "": "ἐ",
+  "": "ά",
+  "": "ῖ",
+  "": "ὰ",
+  "": "ὸ",
+  "": "ἀ",
+  "": "ὲ",
+  "": "ἡ",
+  "": "ῦ",
+  "": "ὐ",
+  "": "ό",
+  "": "ὴ",
+  "": "ῶ",
+  "": "ῆ",
+  "": "ἔ",
+  "": "ὅ",
+  "": "ἄ",
+  "": "ώ",
+  "": "ή",
+  "": "ᾶ",
+  "": "ἴ",
+  "": "ὖ",
+  "": "ἕ",
+  "": "ἶ",
+  "": "ὄ",
+  "": "ὡ",
+  "": "ἵ",
+  "": "ἷ",
+  "": "ὥ",
+  "": "ὔ",
+  "": "ἱ",
+  "": "ἰ",
+  "": "ὁ",
+  "": "ἑ",
+  "": "ὑ",
+  "": "ὀ",
+  "": "ἠ",
+  "": "ῃ",
+  "": "ῇ",
+  "": "ὺ",
+  "": "ἂ",
+  "": "ἢ"
+ },
+ "codes": {
+  "’": {
+   "char": "’"
+  },
+  "'": {
+   "char": "’"
+  },
+  "-": {
+   "char": "-"
+  },
+  "": {
+   "marks": [
+    "̓"
+   ],
+   "final_apostrophe": true
+  },
+  "": {
+   "char": "’"
+  }
+ },
+ "separators": ".,:()[]!;",
+ "audit_notes": [
+  "2026-08-03: '?' and '_' removed from separators (no punctuation evidence in this font's corpus stream); occurrences now surface as unmapped+flagged instead of being silently deleted."
+ ]
+}

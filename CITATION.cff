@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite it as below."
+title: "greek-legacy-decode: recovering polytonic Greek from pre-Unicode font encodings"
+type: software
+authors:
+  - family-names: Girardi
+    given-names: Romain
+    affiliation: "CEPAM UMR 7264, Université Côte d'Azur"
+repository-code: "https://github.com/romain-girardi-eng/greek-legacy-decode"
+license: MIT
+keywords:
+  - ancient-greek
+  - polytonic-greek
+  - digital-humanities
+  - classics
+  - patristics
+  - legacy-fonts
+  - unicode
+  - pdf
+  - text-extraction
+abstract: >-
+  Deterministic decoder for pre-Unicode Greek font encodings (Graeca, SPIonic,
+  Bwgrkl, Odyssea, GrecMonotype, TimesGreek and others) as found in scholarly
+  PDFs and documents typeset c. 1985-2005. Tables are derived empirically by
+  aligning real documents against reference corpora and validated on held-out
+  texts; unknown input is preserved and flagged, never guessed.

@@ -1,0 +1,264 @@
+{
+ "font": "SPIonic (ASCII text keys)",
+ "id": "spionic-ascii",
+ "match": [],
+ "family": "spionic",
+ "derivation": {
+  "method": "clean-room implementation of the published keyboard chart",
+  "source": "SPIonic font documentation (Jimmy Adair, Scholars Press, 1998) — the font and its encoding chart are in the public domain; cross-checked against the MIT-licensed IAS-Scholars/SPIonic-to-Unicode TECkit mapping",
+  "date": "2026-08-03",
+  "note": "SPIonic follows the TLG Beta Code convention: diacritic keys FOLLOW their vowel; case is carried by letter case (not by Beta Code asterisks). Uppercase V and J and lowercase v are deliberately unmapped (archaic-letter slots the chart does not settle); they surface as flagged unmapped codes."
+ },
+ "validation": {
+  "method": "decoded 24 real-world SPIonic passages from the public web (tertullian.org, typeset 1998-2008); TLG-E attestation of all output tokens (len>=3)",
+  "attestation": "56/57 tokens = 98.2 %",
+  "residual": "the single unattested token (ὑπεργέιων) faithfully reproduces a typist error in the source page (accent keyed after epsilon instead of after the diphthong)",
+  "date": "2026-08-03"
+ },
+ "letters": {
+  "a": "α",
+  "b": "β",
+  "g": "γ",
+  "d": "δ",
+  "e": "ε",
+  "z": "ζ",
+  "h": "η",
+  "q": "θ",
+  "i": "ι",
+  "k": "κ",
+  "l": "λ",
+  "m": "μ",
+  "n": "ν",
+  "c": "ξ",
+  "o": "ο",
+  "p": "π",
+  "r": "ρ",
+  "s": "σ",
+  "j": "ς",
+  "t": "τ",
+  "u": "υ",
+  "f": "φ",
+  "x": "χ",
+  "y": "ψ",
+  "w": "ω",
+  "A": "Α",
+  "B": "Β",
+  "G": "Γ",
+  "D": "Δ",
+  "E": "Ε",
+  "Z": "Ζ",
+  "H": "Η",
+  "Q": "Θ",
+  "I": "Ι",
+  "K": "Κ",
+  "L": "Λ",
+  "M": "Μ",
+  "N": "Ν",
+  "C": "Ξ",
+  "O": "Ο",
+  "P": "Π",
+  "R": "Ρ",
+  "S": "Σ",
+  "T": "Τ",
+  "U": "Υ",
+  "F": "Φ",
+  "X": "Χ",
+  "Y": "Ψ",
+  "W": "Ω"
+ },
+ "codes": {
+  "0": {
+   "marks": [
+    "̓"
+   ]
+  },
+  ")": {
+   "marks": [
+    "̓"
+   ]
+  },
+  "9": {
+   "marks": [
+    "̔"
+   ]
+  },
+  "(": {
+   "marks": [
+    "̔"
+   ]
+  },
+  "/": {
+   "marks": [
+    "́"
+   ]
+  },
+  "&": {
+   "marks": [
+    "́"
+   ]
+  },
+  "\\": {
+   "marks": [
+    "̀"
+   ]
+  },
+  "_": {
+   "marks": [
+    "̀"
+   ]
+  },
+  "=": {
+   "marks": [
+    "͂"
+   ]
+  },
+  "~": {
+   "marks": [
+    "͂"
+   ]
+  },
+  "|": {
+   "marks": [
+    "ͅ"
+   ]
+  },
+  "+": {
+   "marks": [
+    "̈"
+   ]
+  },
+  "\"": {
+   "marks": [
+    "̈"
+   ]
+  },
+  "1": {
+   "marks": [
+    "̓",
+    "́"
+   ]
+  },
+  "!": {
+   "marks": [
+    "̓",
+    "́"
+   ]
+  },
+  "2": {
+   "marks": [
+    "̓",
+    "̀"
+   ]
+  },
+  "@": {
+   "marks": [
+    "̓",
+    "̀"
+   ]
+  },
+  "]": {
+   "marks": [
+    "̓",
+    "͂"
+   ]
+  },
+  "}": {
+   "marks": [
+    "̓",
+    "͂"
+   ]
+  },
+  "3": {
+   "marks": [
+    "̔",
+    "́"
+   ]
+  },
+  "#": {
+   "marks": [
+    "̔",
+    "́"
+   ]
+  },
+  "4": {
+   "marks": [
+    "̔",
+    "̀"
+   ]
+  },
+  "$": {
+   "marks": [
+    "̔",
+    "̀"
+   ]
+  },
+  "[": {
+   "marks": [
+    "̔",
+    "͂"
+   ]
+  },
+  "{": {
+   "marks": [
+    "̔",
+    "͂"
+   ]
+  },
+  "5": {
+   "marks": [
+    "̈",
+    "́"
+   ]
+  },
+  "%": {
+   "marks": [
+    "̈",
+    "́"
+   ]
+  },
+  "6": {
+   "marks": [
+    "̈",
+    "̀"
+   ]
+  },
+  "^": {
+   "marks": [
+    "̈",
+    "̀"
+   ]
+  },
+  "<": {
+   "marks": [
+    "̄"
+   ]
+  },
+  ">": {
+   "marks": [
+    "̄"
+   ]
+  },
+  ";": {
+   "char": ";"
+  },
+  ":": {
+   "char": "·"
+  },
+  "'": {
+   "char": "’"
+  },
+  "-": {
+   "char": "-"
+  }
+ },
+ "confidence": {
+  "default": 0.95
+ },
+ "separators": ".,7",
+ "punctuation_notes": {
+  ";": "Greek question mark (erotimatiko)",
+  ":": "ano teleia (raised dot)",
+  "?": "sub-linear dot (editorial uncertainty siglum) — deliberately unmapped, surfaces flagged",
+  "8": "overstrike line (nomina sacra) — deliberately unmapped, surfaces flagged"
+ }
+}

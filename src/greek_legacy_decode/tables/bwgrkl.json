@@ -1,0 +1,148 @@
+{
+ "font": "Bwgrkl",
+ "id": "bwgrkl",
+ "match": [
+  "Bwgrkl"
+ ],
+ "family": "bibleworks",
+ "derivation": {
+  "method": "word-level alignment vs TLG0031 (NT) + TLG0527 (LXX); clean-room",
+  "source_pdf": "The interpretation of freedom in the letters of Paul (thesis, 155 pages)",
+  "aligned_word_pairs": 127,
+  "exact_word_match_on_derivation_pairs": 0.9843,
+  "warning": "only 127 aligned pairs; rough-breathing+accent combos are typed as sequential codes and are covered, but rare codes may be missing"
+ },
+ "validation": {
+  "held_out": "bagby_2015 thesis (30 pages, different work)",
+  "tokens": 155,
+  "coverage": 0.9873,
+  "attestation_base_tlg": 0.9806,
+  "attestation_accented_tlg": 0.9677
+ },
+ "ambiguity": "word-final , and . are accent vs punctuation; resolved contextually (vowel-final + not-yet-accented word => accent). Enclitic chains ending in an accented vowel + real comma decode as the accent (irreducible without syntax).",
+ "letters": {
+  "a": "α",
+  "b": "β",
+  "g": "γ",
+  "d": "δ",
+  "e": "ε",
+  "z": "ζ",
+  "h": "η",
+  "q": "θ",
+  "i": "ι",
+  "k": "κ",
+  "l": "λ",
+  "m": "μ",
+  "n": "ν",
+  "x": "ξ",
+  "o": "ο",
+  "p": "π",
+  "r": "ρ",
+  "s": "σ",
+  "t": "τ",
+  "u": "υ",
+  "f": "φ",
+  "c": "χ",
+  "y": "ψ",
+  "w": "ω",
+  "A": "Α",
+  "B": "Β",
+  "G": "Γ",
+  "D": "Δ",
+  "E": "Ε",
+  "Z": "Ζ",
+  "H": "Η",
+  "Q": "Θ",
+  "I": "Ι",
+  "K": "Κ",
+  "L": "Λ",
+  "M": "Μ",
+  "N": "Ν",
+  "X": "Ξ",
+  "O": "Ο",
+  "P": "Π",
+  "R": "Ρ",
+  "S": "Σ",
+  "T": "Τ",
+  "U": "Υ",
+  "F": "Φ",
+  "C": "Χ",
+  "Y": "Ψ",
+  "W": "Ω",
+  "j": "ς"
+ },
+ "codes": {
+  ",": {
+   "marks": [
+    "́"
+   ],
+   "final_punct": ","
+  },
+  ".": {
+   "marks": [
+    "̀"
+   ],
+   "final_punct": "."
+  },
+  "/": {
+   "marks": [
+    "͂"
+   ]
+  },
+  "v": {
+   "marks": [
+    "̓"
+   ],
+   "final_apostrophe": true
+  },
+  "V": {
+   "marks": [
+    "̓"
+   ],
+   "final_apostrophe": true
+  },
+  "`": {
+   "marks": [
+    "̔"
+   ]
+  },
+  ";": {
+   "marks": [
+    "̓",
+    "́"
+   ]
+  },
+  "'": {
+   "marks": [
+    "̓",
+    "̀"
+   ]
+  },
+  "=": {
+   "marks": [
+    "̓",
+    "͂"
+   ]
+  },
+  "|": {
+   "marks": [
+    "ͅ"
+   ]
+  },
+  "+": {
+   "marks": [
+    "̈"
+   ]
+  },
+  "\\": {
+   "char": "·"
+  },
+  "Å": {
+   "char": "."
+  }
+ },
+ "separators": "()[]{}<>:!\"*",
+ "audit_notes": [
+  "2026-08-03: '?' and '_' removed from separators (no punctuation evidence in this font's corpus stream); occurrences now surface as unmapped+flagged instead of being silently deleted."
+ ]
+}

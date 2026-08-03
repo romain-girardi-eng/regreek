@@ -1,0 +1,249 @@
+{
+ "font": "Graeca",
+ "id": "graeca",
+ "match": [
+  "Graeca"
+ ],
+ "family": "linguists-software",
+ "derivation": {
+  "method": "word-level alignment of the PDF legacy stream with the same text in TLG-E (beta code), then per-character co-occurrence learning; clean-room, no third-party conversion table consulted",
+  "source_pdf": "Bobichon, Justin Martyr, Dialogue avec le Tryphon, vol. 1 (Paradosis 47/1, 2003)",
+  "ground_truth": "TLG0645 (Justinus Martyr), Dialogus cum Tryphone",
+  "aligned_word_pairs": 50026,
+  "exact_word_match_on_derivation_pairs": 0.9626,
+  "note_on_residual": "residual is dominated by genuine edition differences (capitalisation of dialogue turns, accent variants), not decoding errors"
+ },
+ "validation": {
+  "held_out": "Bobichon vol. 2 (Dialogue 75-142, 448 pages, not used in derivation)",
+  "tokens": 15142,
+  "coverage": 0.9993,
+  "attestation_base_tlg": 0.9944,
+  "attestation_accented_tlg": 0.9865,
+  "greek_block_ratio": 1.0
+ },
+ "letters": {
+  "a": "α",
+  "b": "β",
+  "g": "γ",
+  "d": "δ",
+  "e": "ε",
+  "z": "ζ",
+  "h": "η",
+  "q": "θ",
+  "i": "ι",
+  "k": "κ",
+  "l": "λ",
+  "m": "μ",
+  "n": "ν",
+  "x": "ξ",
+  "o": "ο",
+  "p": "π",
+  "r": "ρ",
+  "s": "σ",
+  "t": "τ",
+  "u": "υ",
+  "f": "φ",
+  "c": "χ",
+  "y": "ψ",
+  "w": "ω",
+  "A": "Α",
+  "B": "Β",
+  "G": "Γ",
+  "D": "Δ",
+  "E": "Ε",
+  "Z": "Ζ",
+  "H": "Η",
+  "Q": "Θ",
+  "I": "Ι",
+  "K": "Κ",
+  "L": "Λ",
+  "M": "Μ",
+  "N": "Ν",
+  "X": "Ξ",
+  "O": "Ο",
+  "P": "Π",
+  "R": "Ρ",
+  "S": "Σ",
+  "T": "Τ",
+  "U": "Υ",
+  "F": "Φ",
+  "C": "Χ",
+  "Y": "Ψ",
+  "W": "Ω",
+  "\"": "ς"
+ },
+ "codes": {
+  "j": {
+   "marks": [
+    "̓"
+   ]
+  },
+  "J": {
+   "marks": [
+    "̔"
+   ]
+  },
+  "v": {
+   "marks": [
+    "́"
+   ]
+  },
+  ";": {
+   "marks": [
+    "̀"
+   ]
+  },
+  "'": {
+   "marks": [
+    "͂"
+   ]
+  },
+  "\\": {
+   "marks": [
+    "̓",
+    "͂"
+   ]
+  },
+  "|": {
+   "marks": [
+    "̔",
+    "͂"
+   ]
+  },
+  "[": {
+   "marks": [
+    "̓",
+    "́"
+   ]
+  },
+  "]": {
+   "marks": [
+    "̓",
+    "̀"
+   ]
+  },
+  "{": {
+   "marks": [
+    "̔",
+    "́"
+   ]
+  },
+  "}": {
+   "marks": [
+    "̔",
+    "̀"
+   ]
+  },
+  "/": {
+   "marks": [
+    "ͅ"
+   ]
+  },
+  ">": {
+   "marks": [
+    "̈"
+   ]
+  },
+  "`": {
+   "marks": [
+    "̈",
+    "̀"
+   ]
+  },
+  "!": {
+   "char": "’"
+  },
+  "?": {
+   "marks": [
+    "̈",
+    "́"
+   ],
+   "evidence": {
+    "occurrences": 33,
+    "word_types": [
+     "Ἡσαΐας",
+     "Ἡσαΐου",
+     "Ἡσαΐᾳ",
+     "Δαυΐδ",
+     "πρωΐ",
+     "Νινευΐ",
+     "Νινευΐται"
+    ],
+    "method": "mid-word harvest over Bobichon vols 1-2 + TLG0645 attestation, 2026-08-03",
+    "note": "was wrongly declared a separator; silently deleted diaeresis+acute"
+   }
+  }
+ },
+ "confidence": {
+  "\"": 0.99,
+  "A": 0.99,
+  "B": 0.95,
+  "C": 0.99,
+  "D": 0.99,
+  "E": 0.99,
+  "F": 0.95,
+  "G": 0.95,
+  "H": 0.99,
+  "I": 0.99,
+  "K": 0.99,
+  "L": 0.95,
+  "M": 0.99,
+  "N": 0.95,
+  "O": 0.99,
+  "P": 0.99,
+  "Q": 0.85,
+  "R": 0.95,
+  "S": 0.99,
+  "T": 0.99,
+  "U": 0.95,
+  "W": 0.95,
+  "X": 0.7,
+  "Y": 0.7,
+  "Z": 0.85,
+  "a": 0.99,
+  "b": 0.99,
+  "c": 0.99,
+  "d": 0.99,
+  "e": 0.99,
+  "f": 0.99,
+  "g": 0.99,
+  "h": 0.99,
+  "i": 0.99,
+  "k": 0.99,
+  "l": 0.99,
+  "m": 0.99,
+  "n": 0.99,
+  "o": 0.99,
+  "p": 0.99,
+  "q": 0.99,
+  "r": 0.99,
+  "s": 0.99,
+  "t": 0.99,
+  "u": 0.99,
+  "w": 0.99,
+  "x": 0.99,
+  "y": 0.99,
+  "z": 0.99,
+  "!": 0.99,
+  "'": 0.99,
+  "-": 0.95,
+  "/": 0.99,
+  ";": 0.99,
+  ">": 0.95,
+  "J": 0.99,
+  "[": 0.99,
+  "\\": 0.99,
+  "]": 0.99,
+  "`": 0.85,
+  "j": 0.99,
+  "v": 0.99,
+  "{": 0.99,
+  "|": 0.99,
+  "}": 0.99,
+  "?": 0.97
+ },
+ "separators": ".,:()_",
+ "punctuation_notes": {
+  "_": "Greek question mark (erotimatiko); all sampled contexts are clause-final interrogatives (Πῶς γάρ _ / Τί οὖν _). Dropped with other punctuation in word-level output."
+ }
+}

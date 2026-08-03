@@ -1,0 +1,213 @@
+{
+ "font": "SPIonic",
+ "id": "spionic-cid",
+ "match": [
+  "SPIonic"
+ ],
+ "family": "spionic-cid",
+ "cid_table": true,
+ "derivation": {
+  "method": "this font subset embeds NO ToUnicode CMap; extraction yields raw CIDs (chr(cid)). Letters follow the SPIonic beta-like layout shifted by -0x1E in this subset; codes derived by alignment vs TLG0031/0527 + frequency-weighted attestation",
+  "source_pdf": "Divine and human agency in Paul (T&T Clark)",
+  "attestation_resolutions": {
+   "U+001F": {
+    "name": "marks:greek perisp",
+    "attested": 106,
+    "of": 119,
+    "logfreq": 1007.4,
+    "runner_up": [
+     "marks:acute accent",
+     61,
+     215.1
+    ],
+    "spec": {
+     "marks": [
+      "͂"
+     ]
+    }
+   },
+   "U+000C": {
+    "name": "marks:comma above",
+    "attested": 72,
+    "of": 83,
+    "logfreq": 488.4,
+    "runner_up": [
+     "marks:comma aboveacute accent",
+     32,
+     204.8
+    ],
+    "spec": {
+     "marks": [
+      "̓"
+     ]
+    }
+   },
+   "U+0041": {
+    "name": "marks:grave accent",
+    "attested": 44,
+    "of": 45,
+    "logfreq": 524.6,
+    "runner_up": [
+     "marks:acute accent",
+     43,
+     379.4
+    ],
+    "spec": {
+     "marks": [
+      "̀"
+     ]
+    }
+   },
+   "U+000B": {
+    "name": "marks:reversed com",
+    "attested": 38,
+    "of": 41,
+    "logfreq": 401.1,
+    "runner_up": [
+     "marks:comma above",
+     28,
+     115.7
+    ],
+    "spec": {
+     "marks": [
+      "̔"
+     ]
+    }
+   },
+   "U+0014": {
+    "name": "marks:comma aboveacute accent",
+    "attested": 19,
+    "of": 19,
+    "logfreq": 157.8,
+    "runner_up": [
+     "marks:acute accent",
+     11,
+     25.6
+    ],
+    "spec": {
+     "marks": [
+      "̓",
+      "́"
+     ]
+    }
+   }
+  },
+  "warning": "CID assignments can be subset-specific: this table is verified for the one SPIonic PDF in the corpus and may not transfer to other SPIonic subsets"
+ },
+ "validation": {
+  "same_document": {
+   "tokens": 895,
+   "coverage": 0.9933,
+   "attestation_base_tlg": 0.9809,
+   "attestation_accented_tlg": 0.9528
+  },
+  "held_out": "NONE - single SPIonic document in corpus"
+ },
+ "letters": {
+  "C": "α",
+  "#": "Α",
+  "D": "β",
+  "$": "Β",
+  "I": "γ",
+  ")": "Γ",
+  "F": "δ",
+  "&": "Δ",
+  "G": "ε",
+  "'": "Ε",
+  "\\": "ζ",
+  "<": "Ζ",
+  "J": "η",
+  "*": "Η",
+  "S": "θ",
+  "3": "Θ",
+  "K": "ι",
+  "+": "Ι",
+  "M": "κ",
+  "-": "Κ",
+  "N": "λ",
+  ".": "Λ",
+  "O": "μ",
+  "/": "Μ",
+  "P": "ν",
+  "0": "Ν",
+  "E": "ξ",
+  "%": "Ξ",
+  "Q": "ο",
+  "1": "Ο",
+  "R": "π",
+  "2": "Π",
+  "T": "ρ",
+  "4": "Ρ",
+  "U": "σ",
+  "5": "Σ",
+  "L": "ς",
+  ",": "Σ",
+  "V": "τ",
+  "6": "Τ",
+  "W": "υ",
+  "7": "Υ",
+  "H": "φ",
+  "(": "Φ",
+  "Z": "χ",
+  ":": "Χ",
+  "[": "ψ",
+  ";": "Ψ",
+  "Y": "ω",
+  "9": "Ω"
+ },
+ "codes": {
+  "\u0012": {
+   "marks": [
+    "́"
+   ]
+  },
+  "\u0013": {
+   "marks": [
+    "̓"
+   ]
+  },
+  ">": {
+   "marks": [
+    "̀"
+   ]
+  },
+  "`": {
+   "marks": [
+    "͂"
+   ]
+  },
+  "^": {
+   "marks": [
+    "͂",
+    "ͅ"
+   ]
+  },
+  "\u001f": {
+   "marks": [
+    "͂"
+   ]
+  },
+  "\f": {
+   "marks": [
+    "̓"
+   ]
+  },
+  "A": {
+   "marks": [
+    "̀"
+   ]
+  },
+  "\u000b": {
+   "marks": [
+    "̔"
+   ]
+  },
+  "\u0014": {
+   "marks": [
+    "̓",
+    "́"
+   ]
+  }
+ },
+ "separators": "\u0001\u0002\u0003\u0004\u000e\u000f\u0010\u0011\u001b\u001c\u001d\u001e"
+}

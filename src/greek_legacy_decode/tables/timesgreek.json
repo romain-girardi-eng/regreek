@@ -1,0 +1,263 @@
+{
+ "font": "TimesGreek",
+ "id": "timesgreek",
+ "match": [
+  "TimesGreek"
+ ],
+ "family": "precomposed-latin1",
+ "derivation": {
+  "method": "lexicon-constrained decipherment (TLG-E accented lexicon, frequency-weighted) + per-char alignment against the quoted NT text (Romans 6-7, TLG0031); each non-ascii char is one precomposed accented letter",
+  "source_pdf": "Enthousiasme religieux dans Rm 6 (10 pages)",
+  "attestation_resolutions": {
+   "U+00AC": {
+    "name": "unit:ῶ",
+    "attested": 8,
+    "of": 8,
+    "logfreq": 60.0,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ώ",
+     6,
+     14.0
+    ],
+    "spec": {
+     "unit": "ῶ"
+    }
+   },
+   "U+00B1": {
+    "name": "unit:ῆ",
+    "attested": 8,
+    "of": 8,
+    "logfreq": 89.3,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ὰ",
+     6,
+     66.8
+    ],
+    "spec": {
+     "unit": "ῆ"
+    }
+   },
+   "U+00F2": {
+    "name": "unit:ὸ",
+    "attested": 5,
+    "of": 5,
+    "logfreq": 65.1,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ό",
+     5,
+     45.9
+    ],
+    "spec": {
+     "unit": "ὸ"
+    }
+   },
+   "U+00E0": {
+    "name": "unit:ὰ",
+    "attested": 5,
+    "of": 5,
+    "logfreq": 64.3,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ά",
+     5,
+     47.0
+    ],
+    "spec": {
+     "unit": "ὰ"
+    }
+   },
+   "U+00E4": {
+    "name": "unit:ἁ",
+    "attested": 4,
+    "of": 4,
+    "logfreq": 33.0,
+    "midword_lowercase_rule": false,
+    "runner_up": [
+     "unit:ἀ",
+     4,
+     7.8
+    ],
+    "spec": {
+     "unit": "ἁ"
+    }
+   },
+   "U+00EC": {
+    "name": "unit:ὶ",
+    "attested": 3,
+    "of": 3,
+    "logfreq": 45.7,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:ί",
+     3,
+     31.0
+    ],
+    "spec": {
+     "unit": "ὶ"
+    }
+   },
+   "U+00E7": {
+    "name": "unit:ι",
+    "attested": 8,
+    "of": 9,
+    "logfreq": 53.3,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "apos",
+     7,
+     38.8
+    ],
+    "spec": {
+     "unit": "ι"
+    }
+   },
+   "U+00FB": {
+    "name": "unit:ὐ",
+    "attested": 3,
+    "of": 3,
+    "logfreq": 33.2,
+    "midword_lowercase_rule": true,
+    "runner_up": [
+     "unit:υ",
+     3,
+     13.8
+    ],
+    "spec": {
+     "unit": "ὐ"
+    }
+   }
+  },
+  "manual_alignment_evidence": {
+   "â": "aligned vs TLG0031 Rm6-7 quotes",
+   "⁄": "aligned vs TLG0031 Rm6-7 quotes",
+   "º": "aligned vs TLG0031 Rm6-7 quotes",
+   "Õ": "aligned vs TLG0031 Rm6-7 quotes",
+   "î": "aligned vs TLG0031 Rm6-7 quotes",
+   "™": "aligned vs TLG0031 Rm6-7 quotes",
+   "¢": "aligned vs TLG0031 Rm6-7 quotes",
+   "ü": "aligned vs TLG0031 Rm6-7 quotes",
+   "÷": "aligned vs TLG0031 Rm6-7 quotes",
+   "∫": "aligned vs TLG0031 Rm6-7 quotes",
+   "À": "aligned vs TLG0031 Rm6-7 quotes",
+   "¿": "aligned vs TLG0031 Rm6-7 quotes",
+   "è": "aligned vs TLG0031 Rm6-7 quotes",
+   "Ü": "aligned vs TLG0031 Rm6-7 quotes",
+   "ë": "aligned vs TLG0031 Rm6-7 quotes",
+   "ç": "aligned vs TLG0031 Rm6-7 quotes",
+   "ˆ": "aligned vs TLG0031 Rm6-7 quotes"
+  }
+ },
+ "validation": {
+  "held_out": "NONE - table derived and validated on the same 10-page article (the only TimesGreek document in the corpus)",
+  "tokens": 127,
+  "coverage": 1.0,
+  "attestation_base_tlg": 1.0,
+  "attestation_accented_tlg": 1.0,
+  "warning": "no independent held-out document existed; treat as provisional"
+ },
+ "letters": {
+  "a": "α",
+  "b": "β",
+  "g": "γ",
+  "d": "δ",
+  "e": "ε",
+  "j": "η",
+  "q": "θ",
+  "i": "ι",
+  "k": "κ",
+  "l": "λ",
+  "m": "μ",
+  "n": "ν",
+  "z": "ξ",
+  "o": "ο",
+  "p": "π",
+  "r": "ρ",
+  "s": "σ",
+  "t": "τ",
+  "u": "υ",
+  "f": "φ",
+  "x": "χ",
+  "y": "ψ",
+  "w": "ω",
+  "v": "ς",
+  "c": "ζ",
+  "A": "Α",
+  "B": "Β",
+  "G": "Γ",
+  "D": "Δ",
+  "E": "Ε",
+  "J": "Η",
+  "Q": "Θ",
+  "I": "Ι",
+  "K": "Κ",
+  "L": "Λ",
+  "M": "Μ",
+  "N": "Ν",
+  "Z": "Ξ",
+  "O": "Ο",
+  "P": "Π",
+  "R": "Ρ",
+  "S": "Σ",
+  "T": "Τ",
+  "U": "Υ",
+  "F": "Φ",
+  "X": "Χ",
+  "Y": "Ψ",
+  "W": "Ω",
+  "V": "Σ",
+  "C": "Ζ",
+  "h": "ζ",
+  "É": "ώ",
+  "ß": "ή",
+  "á": "ά",
+  "é": "έ",
+  "ê": "ἐ",
+  "í": "ί",
+  "ó": "ό",
+  "ú": "ύ",
+  "¬": "ῶ",
+  "±": "ῆ",
+  "ò": "ὸ",
+  "à": "ὰ",
+  "ä": "ἁ",
+  "ì": "ὶ",
+  "û": "ὐ",
+  "â": "ἀ",
+  "⁄": "ῖ",
+  "º": "ὅ",
+  "Õ": "ῦ",
+  "î": "ἰ",
+  "™": "ἡ",
+  "¢": "ᾶ",
+  "ü": "ὑ",
+  "÷": "ἴ",
+  "∫": "ὄ",
+  "À": "ὕ",
+  "¿": "ὥ",
+  "è": "ὲ",
+  "Ü": "ὡ",
+  "ë": "ἑ"
+ },
+ "codes": {
+  "’": {
+   "char": "’"
+  },
+  "ç": {
+   "marks": [
+    "ͅ"
+   ]
+  },
+  "ˆ": {
+   "marks": [
+    "̓"
+   ]
+  }
+ },
+ "separators": ".,;:()!",
+ "audit_notes": [
+  "2026-08-03: '?' and '_' removed from separators (no punctuation evidence in this font's corpus stream); occurrences now surface as unmapped+flagged instead of being silently deleted."
+ ]
+}

@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "greek-legacy-decode"
+version = "0.1.0"
+description = "Recover polytonic Unicode Greek from pre-Unicode font encodings (Graeca, SPIonic, Bwgrkl, Odyssea…) in PDFs and text"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Romain Girardi" }]
+keywords = [
+  "ancient-greek", "polytonic-greek", "unicode", "legacy-fonts",
+  "spionic", "graeca", "bwgrkl", "greekkeys", "wingreek",
+  "classics", "patristics", "digital-humanities", "critical-editions",
+  "pdf", "text-extraction",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Text Processing :: Linguistic",
+  "Topic :: Sociology :: History",
+  "Natural Language :: Greek",
+]
+
+dependencies = [
+  "pdfminer.six>=20231228",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ruff>=0.5"]
+
+[project.urls]
+Homepage = "https://github.com/romain-girardi-eng/greek-legacy-decode"
+Issues = "https://github.com/romain-girardi-eng/greek-legacy-decode/issues"
+
+[project.scripts]
+greek-legacy-decode = "greek_legacy_decode.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+greek_legacy_decode = ["tables/*.json"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
