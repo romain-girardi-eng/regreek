@@ -29,7 +29,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from pdfminer.high_level import extract_pages
-from pdfminer.layout import LAParams, LTChar, LTTextLine
+from pdfminer.layout import LAParams, LTAnno, LTChar, LTTextLine
 
 from .decoder import is_greek_char
 from .registry import decoder_for_font, known_legacy_font
@@ -102,8 +102,15 @@ class LayeredPage:
     return "\n".join(b.text for b in self.bands if b.layer == layer)
 
 
-def _decode_line(chars: list[LTChar]) -> str:
-  """Decode a line's characters, applying the legacy table per font run."""
+def _decode_line(items: list) -> str:
+  """Decode a line, applying the legacy table per font run.
+
+  ``items`` are the LTTextLine children: LTChar glyphs AND LTAnno objects —
+  pdfminer represents inter-word spaces it infers from positioning as LTAnno,
+  so filtering to LTChar silently deletes every such space (real defect
+  observed on several publishers: «Theverb'toeat'»). Whitespace, wherever it
+  comes from, is preserved verbatim; only non-space chunks are decoded.
+  """
   out: list[str] = []
   run: list[str] = []
   run_font: str | None = None
@@ -115,12 +122,18 @@ def _decode_line(chars: list[LTChar]) -> str:
     seg = "".join(run)
     dec = decoder_for_font(run_font) if run_font else None
     if dec is not None:
-      out.append(" ".join(dec.decode_word(t).text for t in seg.split()))
+      parts = re.split(r"(\s+)", seg)
+      out.append("".join(
+        p if (not p or p.isspace()) else dec.decode_word(p).text for p in parts
+      ))
     else:
       out.append(seg)
     run, run_font = [], None
 
-  for c in chars:
+  for c in items:
+    if isinstance(c, LTAnno):
+      run.append(c.get_text())
+      continue
     font = c.fontname
     if font != run_font:
       flush()
@@ -149,15 +162,16 @@ def _lines_of(layout) -> list[Line]:
   lines: list[Line] = []
   for el in layout:
     for tl in _iter_text_lines(el):
-      chars = [c for c in tl if isinstance(c, LTChar)]
+      items = [c for c in tl if isinstance(c, (LTChar, LTAnno))]
+      chars = [c for c in items if isinstance(c, LTChar)]
       if not chars:
         continue
-      text = "".join(c.get_text() for c in chars).strip()
+      text = "".join(c.get_text() for c in items).strip()
       if not text:
         continue
       sizes = Counter(round(c.size, 1) for c in chars)
       fonts = Counter(c.fontname.split("+")[-1] for c in chars)
-      decoded = _decode_line(chars)
+      decoded = _decode_line(items)
       greek = sum(1 for ch in decoded if is_greek_char(ch))
       letters = sum(1 for ch in decoded if ch.isalpha()) or 1
       lines.append(Line(

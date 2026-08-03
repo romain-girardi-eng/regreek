@@ -295,3 +295,39 @@ RTL/ZWJ/combining-flood inputs (preserved + flagged), 50k-char tokens
   `apparatus`. Headings on Greek pages of the edition re-audited: the
   remaining ones are genuine testimonia source-titles and back-matter index
   pages (documented limitation), not constituted text.
+
+## 11. End-to-end campaign on 31 real edition PDFs (2026-08-03)
+
+Twelve independent testers ran the full protocol (probe, decode, layers,
+citability, TLG spot-checks) on 31 real PDFs: 17 Sources Chrétiennes volumes,
+Budé and Loeb volumes, catenae (Staab 1933, Houghton COMPAUL), Long & Sedley,
+and the two reference-edition volumes.
+
+**Coverage verdict — the honest number**: 25/31 are scans (10 with no text
+layer, 15 with an OCR layer too corrupted to use) and are correctly reported
+out of scope; the fraction reflects the real composition of a patristics
+shelf: most SC volumes, even the 2006 printing sampled, circulate as scans.
+regreek's decoding stratum is the born-digital 6/31 — where TLG spot-checks
+came back 14/14, 11/12, 9/9 and 8/8 attested.
+
+**Defects found on the born-digital stratum, fixed here (v0.5.0):**
+
+- **Inter-word spaces destroyed** (critical, several publishers): pdfminer
+  represents inferred word gaps as `LTAnno` objects; filtering lines to
+  `LTChar` deleted every such space («Theverb'toeat'», «αὐτοῖςMarc.» in the
+  apparatus). Lines now keep `LTAnno` text verbatim, and legacy-run decoding
+  preserves whitespace exactly (`re.split` on space groups).
+- **The Graeca question mark** (major, citability): `_` decodes to the
+  erotimatiko `;` in both the PDF and text paths (`Τί μάλιστα ; ἔφην`), and
+  code-only tokens survive the word filter. Previously the character was
+  dropped — every interrogative in a 570-page dialogue lost its punctuation.
+- **Silent empty outputs** (minor): blank pages, out-of-range indices and
+  `(cid:N)`-only fonts now produce explicit stderr diagnostics instead of a
+  bare exit 1.
+
+**Documented, not yet addressed** (tracked for phase 2): two-column layouts
+(indices, Long & Sedley) interleave; justified-paragraph reading-order jitter
+inherited from pdfminer line assembly; OCR-layer pages can produce
+confident-looking layer metadata (a scan-quality heuristic is wanted); the
+`^` capital-breathing key in Graeca awaits an evidence harvest; `--page`
+remains 0-based while PDF viewers display 1-based.

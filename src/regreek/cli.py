@@ -87,7 +87,16 @@ def main(argv: list[str] | None = None) -> int:
   if args.layers or args.layer or args.md:
     from .layers import layer_pages
     got = False
+    pages_seen = 0
     for pg in layer_pages(args.pdf, pages=pages):
+      pages_seen += 1
+      if not pg.bands and not args.layers:
+        print(f"[!] page {pg.page}: no extractable text layer "
+              "(blank page, or a scanned image without OCR)", file=sys.stderr)
+      if "(cid:" in (pg.layer_text("greek_text") + pg.layer_text("translation")):
+        print(f"[!] page {pg.page}: this PDF's font has no usable character map — "
+              "output contains raw (cid:N) glyph codes, not text; regreek cannot "
+              "decode it (no ToUnicode and no known table)", file=sys.stderr)
       if args.md:
         if not pg.bands:
           continue
@@ -121,6 +130,12 @@ def main(argv: list[str] | None = None) -> int:
           for b in pg.bands
         ],
       }, ensure_ascii=False))
+    if not got and pages_seen == 0:
+      print("error: no such page in this PDF (indices are 0-based; "
+            "use --list-fonts to probe the file)", file=sys.stderr)
+    elif not got:
+      print("error: requested layer/pages produced no text "
+            "(see warnings above)", file=sys.stderr)
     return 0 if got else 1
 
   any_output = False

@@ -172,6 +172,13 @@
     "method": "mid-word harvest over Bobichon vols 1-2 + TLG0645 attestation, 2026-08-03",
     "note": "was wrongly declared a separator; silently deleted diaeresis+acute"
    }
+  },
+  "_": {
+   "char": ";",
+   "evidence": {
+    "note": "Greek question mark (erotimatiko) — every harvested context is a clause-final interrogative (Πῶς γάρ _ / Τί μάλιστα _ ἔφην, confirmed against the facing French translation); the ; key being taken by the grave accent",
+    "date": "2026-08-03"
+   }
   }
  },
  "confidence": {
@@ -242,8 +249,8 @@
   "}": 0.99,
   "?": 0.97
  },
- "separators": ".,:()_",
+ "separators": ".,:()",
  "punctuation_notes": {
-  "_": "Greek question mark (erotimatiko); all sampled contexts are clause-final interrogatives (Πῶς γάρ _ / Τί οὖν _). Dropped with other punctuation in word-level output."
+  "_": "decodes to the Greek question mark ; (was previously dropped as a separator — e2e finding)"
  }
 }

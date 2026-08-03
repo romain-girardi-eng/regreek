@@ -76,6 +76,8 @@ def tokens(lines: list[str], extra_separators: str = "",
   for ln in lines:
     for t in sep.split(ln):
       t = t.strip("-")
-      if t and _WORD_CHAR.search(t):
+      if t and (_WORD_CHAR.search(t) or any(c in keep for c in t)):
+        # the second clause keeps standalone code tokens (e.g. the Graeca
+        # question mark `_`) that carry no letter but decode to punctuation
         toks.append(t)
   return toks

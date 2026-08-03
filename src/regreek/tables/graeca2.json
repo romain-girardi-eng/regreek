@@ -146,6 +146,13 @@
   },
   "!": {
    "char": "’"
+  },
+  "_": {
+   "char": ";",
+   "evidence": {
+    "note": "Greek question mark (erotimatiko) — every harvested context is a clause-final interrogative (Πῶς γάρ _ / Τί μάλιστα _ ἔφην, confirmed against the facing French translation); the ; key being taken by the grave accent",
+    "date": "2026-08-03"
+   }
   }
  },
  "confidence": {
@@ -218,5 +225,8 @@
  "separators": ".,:()",
  "audit_notes": [
   "2026-08-03: '?' and '_' removed from separators (no punctuation evidence in this font's corpus stream); occurrences now surface as unmapped+flagged instead of being silently deleted."
- ]
+ ],
+ "punctuation_notes": {
+  "_": "decodes to the Greek question mark ; (was previously dropped as a separator — e2e finding)"
+ }
 }
