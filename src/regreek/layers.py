@@ -309,10 +309,13 @@ def classify_page(layout, page_number: int) -> LayeredPage:
   # band, not the whole page: on an apparatus-dominant page (more band
   # lines than text lines — real in dense editions) the page-wide mode IS
   # the apparatus size and a page-wide comparison never fires.
-  # the LAST satisfying candidate wins: an early big gap (around a heading
-  # whose register exceeds the body's) must not preempt the real text/foot
-  # boundary further down
+  # Among valid candidates (big gap + durable size drop below the register
+  # of the lines ABOVE the gap), the LAST one with a substantial foot wins:
+  # an early heading gap must not preempt the real text/foot boundary, and
+  # a one-line printer's footer below the apparatus must not claim the cut
+  # and leave the whole apparatus fused into the text (both observed).
   split = None
+  split_small = None
   for i in range(1, len(work)):
     gap = work[i - 1].y0 - work[i].y0
     if gap <= 1.7 * pitch:
@@ -321,7 +324,12 @@ def classify_page(layout, page_number: int) -> LayeredPage:
     rest = work[i:]
     if work[i].size < upper_size - 0.5 and \
        sum(1 for ln in rest if ln.size < upper_size - 0.5) >= 0.7 * len(rest):
-      split = i
+      if len(rest) >= 3:
+        split = i
+      else:
+        split_small = i
+  if split is None:
+    split = split_small
 
   main, foot = (work, []) if split is None else (work[:split], work[split:])
   body_size = Counter(ln.size for ln in main).most_common(1)[0][0]
