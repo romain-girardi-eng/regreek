@@ -182,8 +182,54 @@ def _lines_of(layout) -> list[Line]:
         fonts=dict(fonts),
         greek_ratio=greek / letters,
       ))
-  lines.sort(key=lambda ln: -ln.y0)
-  return lines
+  lines.sort(key=lambda ln: (-ln.y0, ln.x0))
+  return _merge_fragments(lines)
+
+
+def _merge_fragments(lines: list[Line]) -> list[Line]:
+  """Re-join fragments of one PHYSICAL line.
+
+  pdfminer splits a justified line into several LTTextLines when inline
+  superscripts change the box height; sorted by y0 alone the fragments land
+  in the wrong reading order (observed: "tur, coactus." displaced two lines
+  down). Fragments whose vertical extents overlap by more than half of the
+  smaller extent belong to one line and are joined in x order.
+  """
+  merged: list[Line] = []
+  for ln in lines:
+    if merged:
+      prev = merged[-1]
+      overlap = min(prev.y1, ln.y1) - max(prev.y0, ln.y0)
+      span = min(prev.y1 - prev.y0, ln.y1 - ln.y0)
+      first, second = (prev, ln) if prev.x0 <= ln.x0 else (ln, prev)
+      # horizontally adjacent only: a folio printed at the far end of the
+      # running-head line shares its y but is a separate zone, never joined
+      x_gap = second.x0 - first.x1
+      if span > 0 and overlap / span > 0.5 \
+         and x_gap < 3 * max(first.size, second.size):
+        fonts = dict(first.fonts)
+        for f, n in second.fonts.items():
+          fonts[f] = fonts.get(f, 0) + n
+        # a wide horizontal gap is typographic information (apparatus bands
+        # separate same-line entries by ~2em): preserved as a double space,
+        # the idiom downstream entry-splitting relies on
+        sep = "  " if x_gap > 1.2 * max(first.size, second.size) else " "
+        decoded = f"{first.decoded}{sep}{second.decoded}"
+        greek = sum(1 for ch in decoded if is_greek_char(ch))
+        letters = sum(1 for ch in decoded if ch.isalpha()) or 1
+        wide = first if (first.x1 - first.x0) >= (second.x1 - second.x0) else second
+        merged[-1] = Line(
+          text=f"{first.text}{sep}{second.text}",
+          decoded=decoded,
+          y0=min(prev.y0, ln.y0), y1=max(prev.y1, ln.y1),
+          x0=min(prev.x0, ln.x0), x1=max(prev.x1, ln.x1),
+          size=wide.size,
+          fonts=fonts,
+          greek_ratio=greek / letters,
+        )
+        continue
+    merged.append(ln)
+  return merged
 
 
 def _pitch(lines: list[Line]) -> float:
@@ -241,8 +287,12 @@ def classify_page(layout, page_number: int) -> LayeredPage:
         break
 
   # --- running head: top line, isolated, no sentence content -----------------
+  # A running head never ENDS a sentence: a short final line of a section
+  # (one line of text above the apparatus band, observed) is isolated and
+  # short too, but its terminal punctuation betrays it.
   if len(work) >= 2 and (work[0].y0 - work[1].y0) > 1.6 * pitch \
-      and len(work[0].text) < 70:
+      and len(work[0].text) < 70 \
+      and not work[0].text.rstrip().endswith((".", ";", "·", "!", "?")):
     page.bands.insert(0, Band(
       layer="running_head", lines=[work.pop(0)],
       evidence="top line isolated by >1.6x pitch, short",
@@ -254,18 +304,27 @@ def classify_page(layout, page_number: int) -> LayeredPage:
 
   # --- main/apparatus boundary ----------------------------------------------
   # The apparatus opens at the first big vertical gap after which the size
-  # register drops below the modal body size and stays low.
-  body_size = Counter(ln.size for ln in work).most_common(1)[0][0]
+  # register drops below the modal size OF THE LINES ABOVE the gap and
+  # stays low. The reference register must come from the candidate main
+  # band, not the whole page: on an apparatus-dominant page (more band
+  # lines than text lines — real in dense editions) the page-wide mode IS
+  # the apparatus size and a page-wide comparison never fires.
+  # the LAST satisfying candidate wins: an early big gap (around a heading
+  # whose register exceeds the body's) must not preempt the real text/foot
+  # boundary further down
   split = None
   for i in range(1, len(work)):
     gap = work[i - 1].y0 - work[i].y0
-    if gap > 1.7 * pitch and work[i].size < body_size - 0.5:
-      rest = work[i:]
-      if sum(1 for ln in rest if ln.size < body_size - 0.5) >= 0.7 * len(rest):
-        split = i
-        break
+    if gap <= 1.7 * pitch:
+      continue
+    upper_size = Counter(ln.size for ln in work[:i]).most_common(1)[0][0]
+    rest = work[i:]
+    if work[i].size < upper_size - 0.5 and \
+       sum(1 for ln in rest if ln.size < upper_size - 0.5) >= 0.7 * len(rest):
+      split = i
 
   main, foot = (work, []) if split is None else (work[:split], work[split:])
+  body_size = Counter(ln.size for ln in main).most_common(1)[0][0]
 
   # --- headings inside the main band: centered, narrow lines -----------------
   def is_centered(ln: Line) -> bool:

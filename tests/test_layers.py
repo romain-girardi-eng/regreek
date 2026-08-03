@@ -200,3 +200,32 @@ def test_printed_page_is_the_citable_folio() -> None:
   pg = classify_page(FakeLayout(lines), 8)
   assert pg.printed_page == "225"
 
+
+
+def test_fragments_of_one_physical_line_rejoin_in_x_order() -> None:
+  # pdfminer splits a justified line when superscripts change the box
+  # height; the fragments must rejoin in x order, not y-sort order
+  page = FakeLayout([
+    FakeLine("πρῶτος στίχος τῆς σελίδος ὧδε κεῖται καὶ ἄλλα", "GreekF", 10.0, 700),
+    FakeLine("τέλος πρώτης1 προτάσεως", "GreekF", 10.0, 686, x0=178.0),
+    FakeLine("ἀρχὴ τῆς", "GreekF", 10.0, 686.4, x0=133.0),
+    FakeLine("τρίτος στίχος τοῦ σώματος μετὰ τούτων τῶν λέξεων", "GreekF", 10.0, 672),
+    FakeLine("τέταρτος στίχος τοῦ σώματος ἵνα τὸ σῶμα κρατῇ", "GreekF", 10.0, 658),
+  ])
+  lp = classify_page(page, 0)
+  body = lp.layer_text("greek_text")
+  assert "ἀρχὴ τῆς τέλος πρώτης1 προτάσεως" in body
+
+
+def test_one_line_section_end_is_not_a_running_head() -> None:
+  # a single text line above the apparatus band, isolated and short, ends
+  # with sentence punctuation: it is TEXT — a running head never does
+  page = FakeLayout([
+    FakeLine("τοῦτο τὸ τέλος τοῦ κεφαλαίου ἐστίν2.", "GreekF", 10.0, 700),
+    FakeLine("1 Τέλος A : τέλη B", "GreekApp", 8.5, 640),
+    FakeLine("2 Ἐστίν A : ἔστιν B", "GreekApp", 8.5, 628),
+  ])
+  lp = classify_page(page, 0)
+  layers = [b.layer for b in lp.bands]
+  assert "running_head" not in layers
+  assert "greek_text" in layers
