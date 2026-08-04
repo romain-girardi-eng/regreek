@@ -239,6 +239,12 @@ def _lines_of(layout) -> list[Line]:
         continue
       if not "".join(c.get_text() for c in items).strip():
         continue
+      # ROTATED text never belongs to the horizontal reading flow: a
+      # diagonal watermark ("DRAFT" at 45° across the page) or a spine
+      # title would otherwise be merged into whatever real line it
+      # vertically overlaps, splicing stray letters into words
+      if all(abs(getattr(c, "matrix", (1, 0))[1]) > 0.01 for c in chars):
+        continue
       size = Counter(round(c.size, 1) for c in chars).most_common(1)[0][0]
       frags.append((tl.y0, tl.y1, tl.x0, tl.x1, items, size))
 

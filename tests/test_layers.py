@@ -229,3 +229,18 @@ def test_one_line_section_end_is_not_a_running_head() -> None:
   layers = [b.layer for b in lp.bands]
   assert "running_head" not in layers
   assert "greek_text" in layers
+
+
+def test_rotated_watermark_never_merges_into_lines() -> None:
+  """A diagonal watermark ("DRAFT" at 45 degrees across the page) is set
+  in rotated glyphs; merging them into the horizontal lines they overlap
+  would splice stray capitals into real words."""
+  page = translation_page()
+  wm = FakeLine("D", "Garamond", 150.0, 400.0, x0=180.0)
+  for c in wm:
+    c.matrix = (0.71, 0.71, -0.71, 0.71, 180.0, 400.0)
+  page._containers[0]._lines.insert(3, wm)
+  lp = classify_page(page, 0)
+  joined = " ".join(ln.text for b in lp.bands for ln in b.lines)
+  assert "D " not in joined.replace("Donc", "")  # no spliced capital
+  assert all("D" != w for w in joined.split())
