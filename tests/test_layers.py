@@ -243,4 +243,4 @@ def test_rotated_watermark_never_merges_into_lines() -> None:
   lp = classify_page(page, 0)
   joined = " ".join(ln.text for b in lp.bands for ln in b.lines)
   assert "D " not in joined.replace("Donc", "")  # no spliced capital
-  assert all("D" != w for w in joined.split())
+  assert all(w != "D" for w in joined.split())
