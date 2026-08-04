@@ -331,3 +331,48 @@ inherited from pdfminer line assembly; OCR-layer pages can produce
 confident-looking layer metadata (a scan-quality heuristic is wanted); the
 `^` capital-breathing key in Graeca awaits an evidence harvest; `--page`
 remains 0-based while PDF viewers display 1-based.
+
+## Layer separation hardened on four unseen layouts (2026-08-04, v0.7.2)
+
+The Plaoul loop-to-zero (diorthosis v0.6: 6,293 apparatus entries from the
+official LombardPress/reledmac toolchain, double apparatus, crop marks,
+marginalia in the glyph flow) forced five layer-separation changes; each one
+was then re-certified against every other harness (Bobichon evaluation,
+balex line-referenced 563 = 0/0 at 100 % anchoring, balex/SBLGNT/Problemata
+typeset goldens, whole-NT verse harness 6,800 = 0, real-PDF coverage
+checks) — three cross-corpus regressions were caught and fixed in the
+process:
+
+- **Corner crop marks** ("i" registration marks of LaTeX's crop package)
+  are furniture only when BOTH edge bands agree — horizontal (x1 < 72 or
+  x0 > W−72) AND vertical (y0 < 40 or y0 > H−40). The horizontal test
+  alone ate 2-letter apparatus continuation lines ("Uc") that share the
+  column's x-origin mid-page (caught by the balex golden: a witness and
+  its verbatim entry vanished).
+- **Left-gutter line counters** (reledmac's 5/10/15) are dropped, not
+  merged and not re-injected: merged they splice into words ("quo3d"),
+  re-injected at their y-position they land inside the apparatus band's
+  line flow ("cognitio] 3 intellectio"). Line-referenced anchoring never
+  reads them — entries cite line numbers resolved by counting.
+- **The folio candidate re-enters at the END of the line list**, never
+  sorted into place: trailing the final apparatus entry it is popped as
+  numeric residue by the entry parser; sorted into place it corrupts the
+  band (same failure as the counters).
+- **Weak split tiers** (register drop without a wide gap) and **'full'
+  candidates** (remainder ≥90 % small-register) both require a TRUE band
+  edge: the line right above the cut must belong to the upper register.
+  A 1-line 11 pt title over a 10 pt body ties the size mode and makes
+  every body line look "dropped" (a Bobichon catena page was filed whole
+  as notes); a double apparatus glued to the page foot leaves a 7×-pitch
+  hole BETWEEN its tiers with small type on both sides (lectio14) — a
+  hole, not a boundary.
+- **Among true-edge full candidates, the WIDEST gap wins** (was:
+  first-wins, which let the title gap preempt a 5.9×-pitch true boundary
+  lower down; last-wins had left the apparatus head stranded in the text
+  on apparatus-dominant final pages). The dominant gap is the boundary
+  signature every layout shares.
+
+Method note: every one of these was found by a golden harness, not by
+inspection — and the fix for one corpus broke another three times before
+the discriminants above held everywhere. Shared-lexicon changes without
+the full battery are not safe, at any size.

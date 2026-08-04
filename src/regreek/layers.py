@@ -231,6 +231,7 @@ def _merge_group_items(frags: list[tuple]) -> list:
 
 def _lines_of(layout) -> list[Line]:
   frags: list[tuple] = []
+  solo: list[tuple] = []
   for el in layout:
     for tl in _iter_text_lines(el):
       items = [c for c in tl if isinstance(c, (LTChar, LTAnno))]
@@ -245,7 +246,41 @@ def _lines_of(layout) -> list[Line]:
       # vertically overlaps, splicing stray letters into words
       if all(abs(getattr(c, "matrix", (1, 0))[1]) > 0.01 for c in chars):
         continue
+      # crop/registration furniture: a 1-2 letter mark in a page CORNER
+      # ("i" marks of LaTeX's crop package) is press furniture, never
+      # content. Both edge bands must agree — a short apparatus
+      # continuation line ("Uc") shares the column's x-origin and sits
+      # mid-page, so it survives the horizontal test's tight margins
+      txt = "".join(c.get_text() for c in items).strip()
+      W = getattr(layout, "width", 0) or 0
+      H = getattr(layout, "height", 0) or 0
+      if (len(txt) <= 2 and txt.isalpha()
+          and (tl.x1 < 72 or (W and tl.x0 > W - 72))
+          and H and (tl.y0 < 40 or tl.y0 > H - 40)):
+        continue
       size = Counter(round(c.size, 1) for c in chars).most_common(1)[0][0]
+      # a short NUMERIC fragment centred at the page foot is the printed
+      # folio; when a deep apparatus reaches its height, merging would
+      # splice the digit into whatever word it horizontally crosses
+      # ("quo3d") and hide the citable page number from detection
+      W = getattr(layout, "width", 0) or 0
+      H = getattr(layout, "height", 0) or 0
+      if (txt.isdigit() and len(txt) <= 4 and W and H
+          and abs((tl.x0 + tl.x1) / 2 - W / 2) < 40
+          and tl.y0 < 0.15 * H):
+        solo.append((tl.y0, tl.y1, tl.x0, tl.x1, items, size))
+        continue
+      # marginal line numbers in the LEFT gutter, outside the text
+      # column: isolated short digit runs there are layout apparatus (the
+      # 5/10/15 counters), not content — left in, they poison the band
+      # detection of dense pages, and merged they splice into words
+      # ("quo3d"). Line-referenced anchoring never reads them: entries
+      # cite line numbers, resolved by counting, not by these marks.
+      # The right side is NOT filtered: content lines legitimately end
+      # there and the risk is asymmetric.
+      if (txt.isdigit() and len(txt) <= 4 and (tl.x1 - tl.x0) < 25
+          and W and tl.x1 < 0.22 * W):
+        continue
       frags.append((tl.y0, tl.y1, tl.x0, tl.x1, items, size))
 
   frags.sort(key=lambda f: (-f[0], f[2]))
@@ -269,6 +304,13 @@ def _lines_of(layout) -> list[Line]:
         continue
     groups.append([f])
 
+  # folio candidates re-enter as their own single-fragment groups, at
+  # the END of the list: sorted into their vertical position they land
+  # INSIDE the apparatus band's line flow ("cognitio] 3 intellectio");
+  # appended last they trail the final entry, where the entry parser
+  # already pops trailing numeric residue
+  groups.extend([f] for f in solo)
+
   lines: list[Line] = []
   for g in groups:
     if len(g) == 1:
@@ -284,6 +326,12 @@ def _lines_of(layout) -> list[Line]:
     if ln is not None:
       lines.append(ln)
   return lines
+
+
+def _margin_markish(ln: Line) -> bool:
+  """A short, narrow line — a paragraph counter or a manuscript-folio
+  mark printed small beside the text ("7", "8, V23-va")."""
+  return len(ln.text.strip()) <= 12 and (ln.x1 - ln.x0) < 40
 
 
 def _pitch(lines: list[Line]) -> float:
@@ -370,18 +418,87 @@ def classify_page(layout, page_number: int) -> LayeredPage:
   # and leave the whole apparatus fused into the text (both observed).
   split = None
   split_small = None
+  split_full = None
+  full_gap = 0.0
+  """Among candidates whose remainder is ≥90 % small-register, the one
+  with the WIDEST gap wins: everything below it IS the foot. First-wins
+  let a 1-line 11pt title preempt a 5.9x-pitch true boundary lower down
+  (Bobichon p394); last-wins left the apparatus' own head stranded in
+  the text on an apparatus-dominant final page. The dominant gap is the
+  boundary signature both layouts share."""
   for i in range(1, len(work)):
-    gap = work[i - 1].y0 - work[i].y0
-    if gap <= 1.7 * pitch:
+    # measure the gap over any margin marks in between: a paragraph
+    # counter sitting between text and foot SPLITS the real gap into
+    # two small ones and hides the boundary
+    j = i - 1
+    while j > 0 and _margin_markish(work[j]):
+      j -= 1
+    gap = work[j].y0 - work[i].y0
+    if gap <= 0.85 * pitch:
       continue
+    strong_gap = gap > 1.7 * pitch
+    soft_gap = gap > 1.15 * pitch
     upper_size = Counter(ln.size for ln in work[:i]).most_common(1)[0][0]
-    rest = work[i:]
-    if work[i].size < upper_size - 0.5 and \
-       sum(1 for ln in rest if ln.size < upper_size - 0.5) >= 0.7 * len(rest):
-      if len(rest) >= 3:
+    if _margin_markish(work[i]):
+      # a paragraph counter or manuscript-folio mark ("8, V23-va") set
+      # small INSIDE the column can never OPEN the foot
+      continue
+    # neither the folio (short digits-only) nor small margin marks vote
+    # for or against the register drop
+    rest = [ln for ln in work[i:]
+            if not (ln.text.strip().isdigit()
+                    and len(ln.text.strip()) <= 4)
+            and not _margin_markish(ln)]
+    if not rest:
+      continue
+    dropped = sum(1 for ln in rest if ln.size < upper_size - 0.5)
+    if work[i].size < upper_size - 0.5 and dropped >= 0.7 * len(rest):
+      # full candidates and the weak tiers (no wide gap) must sit on a
+      # TRUE band edge: the line right above belongs to the upper
+      # register. A title page ties the size mode (2 title + 2 body
+      # lines) and a tie resolved toward the title makes every body
+      # line look 'dropped'; and a stretch INSIDE the apparatus (double
+      # apparatus glued to the page foot leaves a 7x-pitch hole between
+      # its tiers) shows the page's widest gap with small type on BOTH
+      # sides — a hole, not a boundary
+      true_edge = j >= 0 and abs(work[j].size - upper_size) < 0.5
+      # a 'full' candidate also needs a SUBSTANTIAL upper part: right
+      # after a 1-3 line title everything below is 'smaller' than the
+      # title's register and a naive full split would file the whole
+      # page as foot (observed on every lectio's opening page)
+      full = dropped >= 0.9 * len(rest) and (i >= 4 or upper_size <= 11) \
+             and true_edge
+      if strong_gap and len(rest) >= 3:
         split = i
-      else:
+        if full and gap > full_gap:
+          full_gap, split_full = gap, i
+      elif strong_gap:
         split_small = i
+      elif not true_edge:
+        pass
+      elif soft_gap and upper_size - work[i].size >= 1.5 and len(rest) >= 3:
+        # a SHARP durable register drop marks the foot even under a
+        # modest gap: a dense page squeezes the text/apparatus gap
+        # below the wide-gap threshold (observed at 1.44x pitch)
+        split = i
+        if full and gap > full_gap:
+          full_gap, split_full = gap, i
+      elif upper_size - work[i].size >= 1.5 and len(rest) >= 2 \
+           and dropped == len(rest):
+        # a SHORT final apparatus (3 lines, no gap at all) still shows
+        # as a sharp drop sustained over EVERY remaining line
+        split = i
+        if full and gap > full_gap:
+          full_gap, split_full = gap, i
+      elif upper_size - work[i].size >= 1.5 and len(rest) >= 5 and full:
+        # the DENSEST pages leave no gap at all (observed at exactly
+        # 1.0x pitch): the register alone decides, under the hardest
+        # conditions — a sharp drop sustained to the very foot
+        split = i
+        if gap > full_gap:
+          full_gap, split_full = gap, i
+  if split_full is not None:
+    split = split_full
   if split is None:
     split = split_small
 

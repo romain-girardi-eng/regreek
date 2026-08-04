@@ -244,3 +244,76 @@ def test_rotated_watermark_never_merges_into_lines() -> None:
   joined = " ".join(ln.text for b in lp.bands for ln in b.lines)
   assert "D " not in joined.replace("Donc", "")  # no spliced capital
   assert all(w != "D" for w in joined.split())
+
+
+def test_corner_crop_marks_dropped_short_continuation_kept() -> None:
+  """The "i" registration marks of LaTeX's crop package live in the page
+  CORNERS (edge band horizontally AND vertically); a 2-letter apparatus
+  continuation line ("Uc") shares the column's x-origin mid-page and
+  must survive."""
+  page = greek_page()
+  lines = page._containers[0]._lines
+  # corner furniture: horizontal edge band + vertical edge band
+  lines.append(FakeLine("i", "Garamond", 10.0, 830.0, x0=24.0))
+  lines.append(FakeLine("i", "Garamond", 10.0, 6.0, x0=24.0))
+  # a short alphabetic continuation of the apparatus, column-aligned,
+  # mid-page: NOT furniture even though it ends inside x<72 territory
+  lines.append(FakeLine("Uc", "Garamond", 8.0, 448.0, x0=50.0))
+  lp = classify_page(page, 0)
+  joined = " ".join(ln.text for b in lp.bands for ln in b.lines)
+  assert "Uc" in joined
+  assert all(w != "i" for w in joined.split())
+
+
+def test_internal_apparatus_hole_is_not_the_boundary() -> None:
+  """A double apparatus glued to the page foot leaves a huge vertical
+  hole BETWEEN its tiers (small type on both sides). The text/foot
+  boundary is the register drop, even when its gap is far smaller than
+  the internal hole (observed: 1.0x pitch boundary vs 7x pitch hole)."""
+  lines = []
+  y = 700.0
+  for _ in range(8):
+    lines.append(FakeLine("corpus textus latinorum verborum hic stat", "Garamond", 10.0, y))
+    y -= 13.0
+  # fontium tier opens right below, ~1x pitch, sharp register drop
+  y -= 0.5
+  for _ in range(3):
+    lines.append(FakeLine("156-157 Actus Apostolorum 5:39 rem tenet", "Garamond", 8.0, y))
+    y -= 10.5
+  # the variant tier sits at the page foot, a huge hole away
+  y -= 90.0
+  for _ in range(4):
+    lines.append(FakeLine("156 tempore] ipse R SV 157 tamen] cum V", "Garamond", 8.0, y))
+    y -= 10.5
+  lp = classify_page(FakeLayout(lines), 0)
+  foot = " ".join(ln.text for b in lp.bands
+                  if b.layer in ("apparatus", "notes") for ln in b.lines)
+  assert "Actus Apostolorum" in foot   # fontium tier IS in the foot
+  assert "tempore" in foot             # variant tier too
+  body = " ".join(ln.text for b in lp.bands
+                  if b.layer in ("greek_text", "translation") for ln in b.lines)
+  assert "Actus Apostolorum" not in body
+
+
+def test_one_line_title_does_not_claim_the_whole_page_as_foot() -> None:
+  """A 1-line 11pt title over a 10pt body must not make the body look
+  'dropped': the boundary is the widest TRUE register edge, so the body
+  stays in the main band and only the small-type foot splits off
+  (observed: a catena page filed whole as 'notes')."""
+  lines = [FakeLine("Catena in Ps. 2, 31", "Garamond", 11.0, 700.0, x0=210.0)]
+  y = 676.0
+  for _ in range(10):
+    lines.append(FakeLine("corpus textus verborum satis longum hic stat bene", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 45.0
+  for _ in range(5):
+    lines.append(FakeLine("2 lectio] varia P : om. V 3 alia] om. B", "Garamond", 8.0, y))
+    y -= 10.0
+  lp = classify_page(FakeLayout(lines), 0)
+  body = " ".join(ln.text for b in lp.bands
+                  if b.layer in ("greek_text", "translation") for ln in b.lines)
+  assert "corpus textus" in body
+  foot = " ".join(ln.text for b in lp.bands
+                  if b.layer in ("apparatus", "notes") for ln in b.lines)
+  assert "lectio] varia" in foot
+  assert "corpus textus" not in foot
