@@ -8,6 +8,8 @@ copyrighted material is embedded.
 
 from __future__ import annotations
 
+import pytest
+
 from regreek.layers import Band, Line, classify_page  # noqa: F401
 
 
@@ -317,3 +319,333 @@ def test_one_line_title_does_not_claim_the_whole_page_as_foot() -> None:
                   if b.layer in ("apparatus", "notes") for ln in b.lines)
   assert "lectio] varia" in foot
   assert "corpus textus" not in foot
+
+
+@pytest.mark.xfail(
+  strict=True,
+  reason=(
+    "a real foot at 0.84x pitch remains in main text because gap <= 0.85*pitch "
+    "is an unconditional veto (audit F9)"
+  ),
+)
+def test_gap_just_below_point_85_pitch_still_separates_foot() -> None:
+  # balex p84 abstraction: a tightly set last text line and first note line
+  # are distinct registers even though their baselines are only 0.84 pitch apart.
+  lines = []
+  y = 700.0
+  for _ in range(4):
+    lines.append(FakeLine("corpus textus legitimus in columna manet", "Garamond", 10.0, y))
+    y -= 12.0
+  y += 1.9  # last body baseline to foot baseline = 10.1pt, just below 0.85 * 12pt
+  for _ in range(3):
+    lines.append(FakeLine("1 lemma] varia lectio A B", "Garamond", 8.0, y))
+    y -= 12.0
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "lemma] varia" in page.layer_text("notes")
+
+
+@pytest.mark.xfail(
+  strict=True,
+  reason=(
+    "a 1.2x-pitch foot with a 1.4pt drop misses both the soft >=1.5pt and "
+    "strong >1.7x tiers (audit F9)"
+  ),
+)
+def test_point_1_2_pitch_gap_with_point_1_4pt_drop_separates_foot() -> None:
+  # balex p82 abstraction: modest whitespace and a visible but sub-1.5pt
+  # register change jointly mark the notes band.
+  lines = []
+  y = 700.0
+  for _ in range(4):
+    lines.append(FakeLine("corpus textus legitimus in columna manet", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 2.4  # last body baseline to foot baseline = 14.4pt = 1.2 * pitch
+  for _ in range(3):
+    lines.append(FakeLine("1 lemma] varia lectio A B", "Garamond", 8.6, y))
+    y -= 12.0
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "lemma] varia" in page.layer_text("notes")
+
+
+def test_gap_just_over_point_1_7_pitch_with_clean_drop_separates_foot() -> None:
+  # balex p84 abstraction: a clean 10pt-to-8pt edge just clears the strong-gap tier.
+  lines = []
+  y = 700.0
+  for _ in range(4):
+    lines.append(FakeLine("corpus textus legitimus in columna manet", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 8.5  # last body baseline to foot baseline = 20.5pt, just over 1.7 * pitch
+  for _ in range(3):
+    lines.append(FakeLine("1 lemma] varia lectio A B", "Garamond", 8.0, y))
+    y -= 12.0
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "lemma] varia" in page.layer_text("notes")
+
+
+@pytest.mark.xfail(
+  strict=True,
+  reason=(
+    "same-size 10pt apparatus has no register drop and is classified as main text "
+    "despite a wide gap (audit F9)"
+  ),
+)
+def test_same_size_apparatus_after_wide_gap_stays_separate() -> None:
+  # balex p84 abstraction: apparatus and body share a 10pt register, so geometry
+  # must not depend on a font-size drop that the edition does not supply.
+  lines = []
+  y = 700.0
+  for _ in range(4):
+    lines.append(FakeLine("corpus textus legitimus in columna manet", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 48.0
+  for _ in range(3):
+    lines.append(FakeLine("1 lemma] apparatus eiusdem corporis A B", "Garamond", 10.0, y))
+    y -= 12.0
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "apparatus eiusdem" in page.layer_text("notes")
+
+
+@pytest.mark.xfail(
+  strict=True,
+  reason=(
+    "two of three genuine foot lines are smaller, but 2/3 falls below the 0.7 "
+    "durable-drop cutoff and the entire foot enters main text (audit F9)"
+  ),
+)
+def test_two_of_three_smaller_lines_are_a_durable_foot() -> None:
+  # lectio14 p5 abstraction: one display-sized line inside a three-line foot
+  # must not erase the smaller register shown by the other two lines.
+  lines = []
+  y = 700.0
+  for _ in range(4):
+    lines.append(FakeLine("corpus textus legitimus in columna manet", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 24.0
+  lines.extend([
+    FakeLine("1 lemma] prima lectio A", "Garamond", 8.0, y),
+    FakeLine("2 lemma] secunda lectio B", "Garamond", 8.0, y - 12.0),
+    FakeLine("3 lemma] linea amplior C", "Garamond", 10.0, y - 24.0),
+  ])
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "prima lectio" in page.layer_text("notes")
+
+
+def test_exact_point_9_remainder_qualifies_as_full_candidate() -> None:
+  # lectio14 p5 abstraction: the upper apparatus edge leaves exactly nine of
+  # ten remainder lines smaller; its wider gap must retain both lower tiers.
+  lines = []
+  y = 700.0
+  for _ in range(4):
+    lines.append(FakeLine("corpus textus legitimus in columna manet", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 14.0  # 26pt first gap
+  for _ in range(4):
+    lines.append(FakeLine("fontium exact ratio linea minor A B", "Garamond", 8.0, y))
+    y -= 12.0
+  lines.append(FakeLine("apparatus subheading in upper register", "Garamond", 10.0, y))
+  y -= 22.0
+  for _ in range(5):
+    lines.append(FakeLine("variant tier linea minor R V", "Garamond", 8.0, y))
+    y -= 12.0
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "fontium exact ratio" in page.layer_text("notes")
+
+
+def test_true_edge_rejects_internal_double_apparatus_hole() -> None:
+  # lectio14 p5 abstraction: the line above the 4x-pitch internal hole is
+  # already 8pt apparatus, not the 10pt upper register.
+  lines = []
+  y = 700.0
+  for _ in range(4):
+    lines.append(FakeLine("corpus textus legitimus in columna manet", "Garamond", 10.0, y))
+    y -= 12.0
+  for _ in range(3):
+    lines.append(FakeLine("fontium tier begins at the true edge", "Garamond", 8.0, y))
+    y -= 12.0
+  y -= 36.0
+  for _ in range(3):
+    lines.append(FakeLine("variant tier below internal hole R V", "Garamond", 8.0, y))
+    y -= 12.0
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "fontium tier" in page.layer_text("notes")
+
+
+def test_true_edge_accepts_body_register_above_bobichon_foot() -> None:
+  # Bobichon p394 abstraction: beneath a one-line 11pt title, the line directly
+  # above the modest foot gap is ordinary 10pt body and validates the edge.
+  lines = [FakeLine("Catena in Ps. 2, 31", "Garamond", 11.0, 700.0, x0=210.0)]
+  y = 688.0
+  for _ in range(3):
+    lines.append(FakeLine("corpus textus sub titulo legitimus manet", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 2.4  # 14.4pt = soft gap; this tier requires true_edge
+  for _ in range(3):
+    lines.append(FakeLine("2 lectio] varia P et omissa V", "Garamond", 8.0, y))
+    y -= 12.0
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "lectio] varia" in page.layer_text("notes")
+
+
+def test_widest_gap_wins_between_two_true_edge_full_candidates() -> None:
+  # Bobichon p394 abstraction: both the title/body gap and the body/foot gap
+  # are full true edges, but the wider 3x-pitch body/foot gap is the cut.
+  # Terminal punctuation keeps this section title from being taken as a
+  # running head before the two boundary candidates are compared.
+  lines = [FakeLine("Catena in Ps. 2, 31.", "Garamond", 11.0, 700.0, x0=210.0)]
+  y = 678.0  # 22pt title gap
+  for _ in range(3):
+    lines.append(FakeLine("corpus textus sub titulo legitimus manet", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 24.0  # 36pt body/foot gap
+  for _ in range(3):
+    lines.append(FakeLine("2 lectio] varia P et omissa V", "Garamond", 8.0, y))
+    y -= 12.0
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "corpus textus" in page.layer_text("translation")
+
+
+@pytest.mark.xfail(
+  strict=True,
+  reason=(
+    "with only three 12pt body lines the true 12pt-to-10pt edge cannot be full; "
+    "the wider internal 10pt-to-8pt gap wins and strands fontium in main text "
+    "(audit F10)"
+  ),
+)
+def test_three_line_12pt_body_keeps_both_double_apparatus_tiers_in_foot() -> None:
+  # lectio14 p5 audit construction: 12pt body, 10pt fontium, then 8pt variants
+  # across the page's widest gap.
+  lines = []
+  y = 700.0
+  for _ in range(3):
+    lines.append(FakeLine("passage in duodecim punctis legitimum", "Garamond", 12.0, y))
+    y -= 12.0
+  y -= 12.0  # 24pt true body/fontium gap
+  for _ in range(4):
+    lines.append(FakeLine("fontium tier decem punctorum A B", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 24.0  # 36pt internal gap, deliberately the widest
+  for _ in range(4):
+    lines.append(FakeLine("variant tier octo punctorum R V", "Garamond", 8.0, y))
+    y -= 12.0
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "fontium tier" in page.layer_text("notes")
+
+
+@pytest.mark.xfail(
+  strict=True,
+  reason=(
+    "a legitimate two-letter corner catchword is irreversibly dropped by the "
+    "corner-furniture filter (audit F10)"
+  ),
+)
+def test_two_letter_corner_catchword_survives_furniture_filter() -> None:
+  # balex p82 abstraction: the compositorial catchword "Et" is real textual
+  # content despite occupying the same corner geometry as crop furniture.
+  lines = []
+  y = 700.0
+  for _ in range(4):
+    lines.append(FakeLine("corpus textus ad proximam paginam ducit", "Garamond", 10.0, y))
+    y -= 12.0
+  lines.append(FakeLine("Et", "Garamond", 10.0, 20.0, x0=24.0))
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "Et" in " ".join(b.text for b in page.bands)
+
+
+@pytest.mark.xfail(
+  strict=True,
+  reason=(
+    "a narrow digits-only textual line in the left gutter is irreversibly dropped "
+    "as a marginal counter (audit F10)"
+  ),
+)
+def test_narrow_digits_only_text_in_left_gutter_survives_filter() -> None:
+  # balex p84 abstraction: a displayed textual numeral shares the left-gutter
+  # geometry of reledmac line counters but belongs to the constituted passage.
+  lines = [
+    FakeLine("corpus textus ante numerum legitimum", "Garamond", 10.0, 700.0),
+    FakeLine("12", "Garamond", 10.0, 688.0, x0=50.0),
+    FakeLine("corpus textus post numerum legitimum", "Garamond", 10.0, 676.0),
+    FakeLine("corpus textus in eadem columna pergit", "Garamond", 10.0, 664.0),
+  ]
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "12" in page.layer_text("translation").splitlines()
+
+
+@pytest.mark.xfail(
+  strict=True,
+  reason=(
+    "the narrow lexical opener '1 om. A' is treated as margin-markish and left "
+    "in main text while its following apparatus lines split off (audit F10)"
+  ),
+)
+def test_short_narrow_apparatus_opener_stays_with_its_foot_band() -> None:
+  # lectio14 p5 abstraction: a terse first apparatus entry opens the same band
+  # as the two full-width entries immediately below it.
+  lines = []
+  y = 700.0
+  for _ in range(4):
+    lines.append(FakeLine("corpus textus legitimus in columna manet", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 24.0
+  lines.extend([
+    FakeLine("1 om. A", "Garamond", 8.0, y),
+    FakeLine("2 lemma] varia lectio R V", "Garamond", 8.0, y - 12.0),
+    FakeLine("3 lemma] altera lectio S", "Garamond", 8.0, y - 24.0),
+  ])
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "1 om. A" in page.layer_text("notes")
+
+
+@pytest.mark.xfail(
+  strict=True,
+  reason=(
+    "upper_size <= 11 makes a three-line 11pt passage a full candidate, so its "
+    "wider gap swallows legitimate 10pt continuation text as notes (audit F10)"
+  ),
+)
+def test_upper_at_most_11_escape_does_not_swallow_legitimate_continuation() -> None:
+  # Bobichon p394 abstraction: three 11pt lines and their smaller 10pt continuation
+  # are one passage; only the still-smaller 8pt material is the foot.
+  lines = []
+  y = 700.0
+  for _ in range(3):
+    lines.append(FakeLine("passage legitimum in undecim punctis", "Garamond", 11.0, y))
+    y -= 12.0
+  y -= 18.0  # 30pt passage/continuation gap, deliberately wider
+  for _ in range(4):
+    lines.append(FakeLine("continuatio legitima in decem punctis", "Garamond", 10.0, y))
+    y -= 12.0
+  y -= 12.0  # 24pt true continuation/foot gap
+  for _ in range(3):
+    lines.append(FakeLine("1 lemma] apparatus octo punctorum A", "Garamond", 8.0, y))
+    y -= 12.0
+
+  page = classify_page(FakeLayout(lines), 0)
+  assert "continuatio legitima" in page.layer_text("translation")
+
+
+def test_folio_candidate_reenters_at_end_of_line_list() -> None:
+  # balex p84 abstraction: the centered folio sits physically between the two
+  # lines that once became "cognitio] 3 intellectio" in the apparatus flow.
+  layout = FakeLayout([
+    FakeLine("cognitio] lectio R", "Garamond", 8.0, 112.0),
+    FakeLine("3", "Garamond", 10.0, 106.0, x0=290.0),
+    FakeLine("intellectio] omissa V", "Garamond", 8.0, 100.0),
+  ])
+
+  texts = [line.text for line in L._lines_of(layout)]
+  assert texts == ["cognitio] lectio R", "intellectio] omissa V", "3"]
