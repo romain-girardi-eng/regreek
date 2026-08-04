@@ -8,7 +8,7 @@ authors:
     affiliation: "CEPAM UMR 7264, Université Côte d'Azur"
 repository-code: "https://github.com/romain-girardi-eng/regreek"
 doi: 10.5281/zenodo.21778443
-version: 0.4.1
+version: 0.7.2
 date-released: "2026-08-03"
 license: MIT
 keywords:
